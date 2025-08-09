@@ -4,6 +4,7 @@ import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { PostgresStore, PgVector } from "@mastra/pg";
 import { todoTool } from "@/tools/todo-tool";
+import { integratePaywallTool } from "@/tools/paywall-tool";
 
 export const memory = new Memory({
   options: {
@@ -29,5 +30,6 @@ export const builderAgent = new Agent({
   memory,
   tools: {
     update_todo_list: todoTool,
+    integrate_paywall: integratePaywallTool,
   },
 });
