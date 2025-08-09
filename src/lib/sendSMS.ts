@@ -1,5 +1,5 @@
-const SKIPCALLS_API_KEY = "sk_fc80ac13402da4a5a0acf0826419a4d7f051ec59fa6cb1007e912819b5f61e25";
-const SKIPCALLS_API_URL = 'https://be.skipcalls.com/sms/send';
+const SKIPCALLS_API_KEY = process.env.SKIPCALLS_API_KEY!;
+const SKIPCALLS_API_URL = process.env.SKIPCALLS_API_URL || 'https://be.skipcalls.com/sms/send';
 
 export interface SMSResult {
   phoneNumber: string;
