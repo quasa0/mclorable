@@ -15,7 +15,7 @@ function CodeBlock({ children, className, ...props }: CodeBlockProps) {
     <div
       className={cn(
         "not-prose flex w-full flex-col overflow-clip border",
-        "border-border bg-card text-card-foreground rounded",
+        "border-border bg-card text-card-foreground rounded-[5px]",
         className,
       )}
       {...props}
@@ -58,23 +58,39 @@ function CodeBlockCode({
   }, [code, language, theme]);
 
   const classNames = cn(
-    "w-full overflow-x-auto text-[13px] [&>pre]:px-4 [&>pre]:py-4",
+    "w-full overflow-x-auto text-[13px] [&>pre]:px-4 [&>pre]:py-4 [&>pre]:!bg-transparent [&>pre>code]:!bg-transparent [&>pre]:!bg-opacity-0 [&>pre]:!shadow-none [&>pre]:!border-0",
     className,
   );
 
   // SSR fallback: render plain code if not hydrated yet
   return highlightedHtml ? (
-    <div
-      className={classNames}
-      dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-      {...props}
-    />
+    <>
+      <div
+        className={cn(classNames, "glass-code")}
+        dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+        {...props}
+      />
+      <style jsx>{`
+        :global(.glass-code pre),
+        :global(.glass-code code) {
+          background: transparent !important;
+        }
+      `}</style>
+    </>
   ) : (
-    <div className={classNames} {...props}>
-      <pre>
-        <code>{code}</code>
-      </pre>
-    </div>
+    <>
+      <div className={cn(classNames, "glass-code")} {...props}>
+        <pre>
+          <code>{code}</code>
+        </pre>
+      </div>
+      <style jsx>{`
+        :global(.glass-code pre),
+        :global(.glass-code code) {
+          background: transparent !important;
+        }
+      `}</style>
+    </>
   );
 }
 

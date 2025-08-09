@@ -4,6 +4,7 @@ import { memo, useId, useMemo } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeBlock, CodeBlockCode } from "./code-block";
+import { GlassEffect, GlassFilter } from "./liquidy-glass";
 
 export type MarkdownProps = {
   children: string;
@@ -48,9 +49,17 @@ const INITIAL_COMPONENTS: Partial<Components> = {
     const language = extractLanguage(className);
 
     return (
-      <CodeBlock className={className}>
-        <CodeBlockCode code={children as string} language={language} />
-      </CodeBlock>
+      <GlassEffect
+        className="rounded-[13px]"
+        overlayOpacity={0.18}
+        outlineOpacity={0.25}
+        outlineWidth={0.5}
+        style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08), 0 0 12px rgba(0,0,0,0.04)" }}
+      >
+        <CodeBlock className={cn("bg-transparent border-0 rounded-[17px] w-full font-normal cursor-text", className)}>
+          <CodeBlockCode code={children as string} language={language} />
+        </CodeBlock>
+      </GlassEffect>
     );
   },
   pre: function PreComponent({ children }) {
@@ -233,6 +242,7 @@ function MarkdownComponent({
 
   return (
     <div className={cn("[&>*:last-child]:mb-0", className)}>
+      <GlassFilter />
       {blocks.map((block, index) => (
         <MemoizedMarkdownBlock
           key={`${blockId}-block-${index}`}
