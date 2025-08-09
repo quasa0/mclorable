@@ -187,7 +187,7 @@ export function HeroSection() {
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight mb-6 md:mb-8 leading-[1.2] pb-1"
               >
                 <span className="text-transparent animate-rainbow-text font-bold">
-                  Mcloving
+                  McLovin
                 </span>{" "}
                 <br className="hidden lg:inline" />
                 <span
