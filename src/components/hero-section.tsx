@@ -198,7 +198,7 @@ export function HeroSection() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  call your vibecode CTO
+                  Your AI-powered CTO
                 </span>
               </motion.h1>
 
@@ -213,9 +213,9 @@ export function HeroSection() {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Your AI-powered development companion that transforms ideas{" "}
+                Only pay for generated revenue, not meaningless tokens.{" "}
                 <br className="hidden lg:inline" />
-                into production-ready applications instantly
+                McLovin charges just 3% of what you earn
               </motion.h2>
 
               {/* Prompt Input */}
@@ -251,7 +251,7 @@ export function HeroSection() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  Powered by AI, built for developers
+                  Performance-based pricing • No upfront costs
                 </p>
                 <div className="flex flex-col gap-4">
                   {/* Feature Icons Row */}
