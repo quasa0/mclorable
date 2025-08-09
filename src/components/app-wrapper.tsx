@@ -50,16 +50,6 @@ export default function AppWrapper({
 
   return (
     <div className="h-screen flex flex-col" style={{ height: "100dvh" }}>
-      <TopBar
-        appName={appName}
-        repoId={repoId}
-        consoleUrl={consoleUrl}
-        codeServerUrl={codeServerUrl}
-        domain={domain}
-        appId={appId}
-        onRefresh={refreshFunction || undefined}
-      />
-
       <div className="relative flex-1 overflow-hidden">
         {/* Preview fills the background */}
         <div className="absolute inset-0">
@@ -102,26 +92,14 @@ export default function AppWrapper({
 
         {/* Bottom-left home button */}
         <div className="pointer-events-none fixed left-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30">
-          <div className="pointer-events-auto flex items-center gap-2">
-            <GlassEffect
-              className="rounded-lg px-3 py-2 hover:scale-[103%]"
-              href="/"
-              target="_self"
-              overlayOpacity={0.18}
-              outlineOpacity={0.25}
-              outlineWidth={0.5}
-              aria-label="Home"
-            >
-              <HomeIcon className="h-4 w-4" />
-            </GlassEffect>
-          </div>
+          
         </div>
 
         {/* Bottom-right action overlay */}
         <div className="pointer-events-none fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 flex flex-col gap-2">
           <div className="pointer-events-auto flex items-center gap-2">
             <GlassEffect
-              className="rounded-lg px-3 py-2 hover:scale-[103%]"
+              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
               onClick={refreshFunction || undefined}
               style={{ opacity: refreshFunction ? 1 : 0.5, pointerEvents: refreshFunction ? "auto" : "none" }}
               overlayOpacity={0.18}
@@ -129,10 +107,12 @@ export default function AppWrapper({
               outlineWidth={0.5}
               aria-label="Refresh"
             >
-              <RefreshCwIcon className="h-4 w-4" />
+              <div className="h-10 w-10 flex items-center justify-center">
+                <RefreshCwIcon className="h-4 w-4 block" />
+              </div>
             </GlassEffect>
             <GlassEffect
-              className="rounded-lg px-3 py-2 hover:scale-[103%]"
+              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
               href={codeServerUrl}
               target="_blank"
               overlayOpacity={0.18}
@@ -140,18 +120,22 @@ export default function AppWrapper({
               outlineWidth={0.5}
               aria-label="Open in VS Code"
             >
-              <img src="/logos/vscode.svg" className="h-4 w-4" alt="VS Code Logo" />
+              <div className="h-10 w-10 flex items-center justify-center">
+                <img src="/logos/vscode.svg" className="h-4 w-4 block" alt="VS Code Logo" />
+              </div>
             </GlassEffect>
             <GlassEffect
-              className="rounded-lg px-3 py-2 hover:scale-[103%]"
-              href={consoleUrl}
               target="_blank"
+              href={consoleUrl}
+              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
               overlayOpacity={0.18}
               outlineOpacity={0.25}
               outlineWidth={0.5}
               aria-label="Open Terminal"
             >
-              <TerminalIcon className="h-4 w-4" />
+              <div className="h-10 w-10 flex items-center justify-center">
+                <TerminalIcon className="h-4 w-4" />
+              </div>
             </GlassEffect>
           </div>
         </div>
