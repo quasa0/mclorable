@@ -3,7 +3,7 @@
 import React from "react";
 
 // Types
-interface GlassEffectProps {
+interface GlassEffectProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -30,17 +30,19 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
   overlayOpacity = 0.25,
   outlineOpacity = 0.5,
   outlineWidth = 1,
+  ...restProps
 }) => {
   const glassStyle = {
     boxShadow: "0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1)",
     transitionTimingFunction: "cubic-bezier(0.175, 0.885, 0.32, 2.2)",
     ...style,
-  };
+  } as React.CSSProperties;
 
-  const content = (
+  const inner = (
     <div
       className={`relative flex font-semibold overflow-hidden text-black cursor-pointer transition-all duration-700 ${className}`}
       style={glassStyle}
+      {...restProps}
     >
       {/* Glass Layers */}
       <div
@@ -75,11 +77,17 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
   );
 
   return href ? (
-    <a href={href} target={target} rel="noopener noreferrer" className="block">
-      {content}
+    <a
+      href={href}
+      target={target}
+      rel="noopener noreferrer"
+      className="block"
+      {...(restProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+    >
+      {inner}
     </a>
   ) : (
-    content
+    inner
   );
 };
 

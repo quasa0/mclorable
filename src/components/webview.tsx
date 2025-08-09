@@ -28,7 +28,7 @@ export default function WebView(props: {
 
   return (
     <div className="flex flex-col overflow-hidden h-full border-l transition-opacity duration-700 mt-[2px]">
-      <div className="absolute inset-0">
+      {/* <div className="absolute inset-0">
         <iframe
           title="Golden Doodles site"
           src="https://cluely.com/"
@@ -36,8 +36,8 @@ export default function WebView(props: {
           referrerPolicy="no-referrer"
           allow="fullscreen"
         />
-      </div>
-      {/* <FreestyleDevServer
+      </div> */}
+      <FreestyleDevServer
         ref={devServerRef}
         actions={{ requestDevServer }}
         repoId={props.repo}
@@ -55,7 +55,7 @@ export default function WebView(props: {
             </div>
           )
         }
-      /> */}
+      />
     </div>
   );
 }
