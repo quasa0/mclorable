@@ -24,6 +24,7 @@ For guidance on building app builders with AI, see the [Freestyle guide on Build
 - Redis (for caching and session management)
 - Anthropic API key
 - Freestyle API key
+- Morph API key (optional)
 
 ### Installation
 
