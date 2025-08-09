@@ -204,7 +204,7 @@ export function HeroSection() {
               </motion.h1>
 
               <div className="absolute inset-0 z-20 pointer-events-none">
-                <LiquidGlass />
+                <LiquidGlass className="h-48 w-80 rounded-lg" />
               </div>
 
               <motion.h2

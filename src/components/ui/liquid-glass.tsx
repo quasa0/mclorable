@@ -52,7 +52,6 @@ const initialSettings = {
     distanceOffset: 0.15,
 };
 
-
 export const LiquidGlass = ({
     offset = 10,
     className

@@ -105,29 +105,13 @@ export default function Chat(props: {
 
   return (
     <div className="relative h-full w-full" style={{ transform: "translateZ(0)" }}>
-      {/* Gradient underlay pinned to bottom */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[250px] mix-blend-normal"
-        aria-hidden
-      >
-        <div
-          className="absolute inset-0 h-[250px] bg-gradient-to-t from-black/10 to-transparent"
-          style={{
-            mask: "linear-gradient(rgba(255, 255, 255, 0.25), black, black)",
-            maskSize: "auto",
-            maskComposite: "add",
-            maskMode: "match-source",
-            backdropFilter: "blur(8px)",
-          }}
-        />
-      </div>
       {/* Messages feed */}
       {isFeedOpen && (
         <div className="pointer-events-none absolute inset-x-0 bottom-24 z-10 flex justify-center px-4">
           <div className="pointer-events-auto origin-bottom w-full max-w-3xl overflow-hidden">
             <div
               ref={feedRef}
-              className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pb-2 pr-1 pl-1"
+              className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pb-2 pr-1 pl-1 no-scrollbar"
             >
               {messages.map((message: any) => {
                 const text = Array.isArray(message.parts)
@@ -243,6 +227,17 @@ export default function Chat(props: {
           </div>
         </form>
       </div>
+      <style jsx>{`
+        .no-scrollbar {
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+          background: transparent; /* Chrome/Safari/Webkit */
+        }
+      `}</style>
     </div>
   );
 }
