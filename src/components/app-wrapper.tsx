@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Chat from "./chat";
-import { TopBar } from "./topbar";
 import WebView from "./webview";
 import { UIMessage } from "ai";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GlassEffect } from "./ui/liquidy-glass";
-import { RefreshCwIcon, TerminalIcon, HomeIcon } from "lucide-react";
+import { RefreshCwIcon, TerminalIcon } from "lucide-react";
+import { ProductCreationModal } from "./product-creation-modal";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +35,9 @@ export default function AppWrapper({
   domain?: string;
   running: boolean;
 }) {
-  const [refreshFunction, setRefreshFunction] = useState<(() => void) | null>(null);
+  const [refreshFunction, setRefreshFunction] = useState<(() => void) | null>(
+    null
+  );
 
   const handleRefreshReady = useCallback((refreshFn: () => void) => {
     setRefreshFunction(() => refreshFn);
@@ -50,14 +52,15 @@ export default function AppWrapper({
 
   return (
     <div className="h-screen flex flex-col" style={{ height: "100dvh" }}>
+      <ProductCreationModal appId={appId} />
       <div className="relative flex-1 overflow-hidden">
         {/* Preview fills the background */}
         <div className="absolute inset-0">
-          <WebView 
-            repo={repo} 
-            baseId={baseId} 
-            appId={appId} 
-            domain={domain} 
+          <WebView
+            repo={repo}
+            baseId={baseId}
+            appId={appId}
+            domain={domain}
             onRefreshReady={handleRefreshReady}
           />
         </div>
@@ -70,13 +73,14 @@ export default function AppWrapper({
           <div
             className="absolute inset-0 h-[250px] bg-gradient-to-t from-black/10 to-transparent"
             style={{
-              mask: 'linear-gradient(rgba(255, 255, 255, 0.25), black, black)',
-              WebkitMask: 'linear-gradient(rgba(255, 255, 255, 0.25), black, black)',
-              maskSize: 'auto',
-              maskComposite: 'add',
-              maskMode: 'match-source',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)'
+              mask: "linear-gradient(rgba(255, 255, 255, 0.25), black, black)",
+              WebkitMask:
+                "linear-gradient(rgba(255, 255, 255, 0.25), black, black)",
+              maskSize: "auto",
+              maskComposite: "add",
+              maskMode: "match-source",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
             }}
           />
         </div>
@@ -85,15 +89,18 @@ export default function AppWrapper({
         <QueryClientProvider client={queryClient}>
           <div className="pointer-events-none fixed inset-x-0 bottom-[max(16px,env(safe-area-inset-bottom))] z-20 flex justify-center px-4">
             <div className="pointer-events-auto w-full max-w-3xl sm:h-[40vh] h-[50vh]">
-              <Chat appId={appId} initialMessages={initialMessages} key={appId} running={running} />
+              <Chat
+                appId={appId}
+                initialMessages={initialMessages}
+                key={appId}
+                running={running}
+              />
             </div>
           </div>
         </QueryClientProvider>
 
         {/* Bottom-left home button */}
-        <div className="pointer-events-none fixed left-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30">
-          
-        </div>
+        <div className="pointer-events-none fixed left-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30"></div>
 
         {/* Bottom-right action overlay */}
         <div className="pointer-events-none fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 flex flex-col gap-2">
@@ -101,7 +108,10 @@ export default function AppWrapper({
             <GlassEffect
               className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
               onClick={refreshFunction || undefined}
-              style={{ opacity: refreshFunction ? 1 : 0.5, pointerEvents: refreshFunction ? "auto" : "none" }}
+              style={{
+                opacity: refreshFunction ? 1 : 0.5,
+                pointerEvents: refreshFunction ? "auto" : "none",
+              }}
               overlayOpacity={0.18}
               outlineOpacity={0.25}
               outlineWidth={0.5}
@@ -121,7 +131,11 @@ export default function AppWrapper({
               aria-label="Open in VS Code"
             >
               <div className="h-10 w-10 flex items-center justify-center">
-                <img src="/logos/vscode.svg" className="h-4 w-4 block" alt="VS Code Logo" />
+                <img
+                  src="/logos/vscode.svg"
+                  className="h-4 w-4 block"
+                  alt="VS Code Logo"
+                />
               </div>
             </GlassEffect>
             <GlassEffect
@@ -137,6 +151,8 @@ export default function AppWrapper({
                 <TerminalIcon className="h-4 w-4" />
               </div>
             </GlassEffect>
+
+            <ProductCreationModal appId={appId} />
           </div>
         </div>
       </div>
