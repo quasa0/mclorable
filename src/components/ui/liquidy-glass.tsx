@@ -49,21 +49,28 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
           backdropFilter: "blur(3px)",
           filter: "url(#glass-distortion)",
           isolation: "isolate",
+          borderRadius: "inherit",
+          willChange: "filter, backdrop-filter, transform",
         }}
       />
       <div
         className="absolute inset-0 z-10 rounded-inherit"
-        style={{ background: `rgba(255, 255, 255, ${overlayOpacity})` }}
+        style={{
+          background: `rgba(255, 255, 255, ${overlayOpacity})`,
+          borderRadius: "inherit",
+          backgroundClip: "padding-box",
+        }}
       />
       <div
         className="absolute inset-0 z-20 rounded-inherit overflow-hidden"
         style={{
           boxShadow: `inset 0 0 0 ${outlineWidth}px rgba(255, 255, 255, ${outlineOpacity})`,
+          borderRadius: "inherit",
         }}
       />
 
       {/* Content */}
-      <div className="relative z-30">{children}</div>
+      <div className="relative z-30 w-full">{children}</div>
     </div>
   );
 

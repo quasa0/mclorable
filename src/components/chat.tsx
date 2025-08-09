@@ -7,6 +7,7 @@ import { chatState } from "@/actions/chat-streaming";
 import { CompressedImage } from "@/lib/image-compression";
 import { useChatSafe } from "./use-chat";
 import { GlassEffect, GlassFilter } from "./ui/liquidy-glass";
+import { Markdown } from "./ui/markdown";
 
 export default function Chat(props: {
   appId: string;
@@ -113,7 +114,7 @@ export default function Chat(props: {
           <div className="pointer-events-auto origin-bottom w-full max-w-3xl overflow-hidden">
             <div
               ref={feedRef}
-                className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pb-2 pr-1 pl-1 no-scrollbar"
+                className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pt-3 pb-2 pr-1 pl-1 no-scrollbar"
             >
               {messages.map((message: any) => {
                 const text = Array.isArray(message.parts)
@@ -126,13 +127,18 @@ export default function Chat(props: {
                 const isUser = message.role === "user";
                 return (
                   <div key={message.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-                    <div
-                      className={`pointer-events-auto max-w-[85%] rounded-2xl border px-3 py-3 text-[14px] leading-relaxed shadow-sm backdrop-blur-sm bg-white/45 border-white/30 text-black/70 ${
-                        isUser ? "mr-2" : "ml-2"
-                      }`}
+                    <GlassEffect
+                      className={`pointer-events-auto ${isUser ? "min-w-[30%]" : "min-w-[60%]"} max-w-[85%] rounded-xl ${isUser ? "mr-2" : "ml-2"}`}
+                      overlayOpacity={0.18}
+                      outlineOpacity={0.25}
+                      outlineWidth={0.5}
                     >
-                      <div className="whitespace-pre-wrap">{text}</div>
-                    </div>
+                      <Markdown
+                        className={`px-3 py-3 w-full text-[14px] leading-relaxed text-black/70 font-normal cursor-text ${isUser ? "text-right" : ""}`}
+                      >
+                        {text}
+                      </Markdown>
+                    </GlassEffect>
                   </div>
                 );
               })}
