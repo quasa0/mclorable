@@ -5,6 +5,7 @@ import {
   uuid,
   json,
   pgEnum,
+  integer,
 } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/node-postgres";
 
@@ -65,4 +66,42 @@ export const userPhones = pgTable("user_phones", {
   userId: text("user_id").notNull(),
   freestyleIdentity: text("freestyle_identity").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// products table for storing stripe products
+export const products = pgTable("products", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  appId: uuid("app_id")
+    .notNull()
+    .references(() => appsTable.id, { onDelete: "cascade" }),
+  stripeProductId: text("stripe_product_id").notNull().unique(),
+  stripePriceId: text("stripe_price_id").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: integer("price").notNull(), // in cents
+  currency: text("currency").notNull().default("usd"),
+  recurringInterval: text("recurring_interval"), // month, year, etc
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// subscriptions table for tracking user subscriptions
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  appId: uuid("app_id")
+    .notNull()
+    .references(() => appsTable.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  productId: uuid("product_id")
+    .notNull()
+    .references(() => products.id),
+  stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
+  stripeCustomerId: text("stripe_customer_id"),
+  status: text("status").notNull(), // active, canceled, past_due, etc
+  currentPeriodStart: timestamp("current_period_start"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  canceledAt: timestamp("canceled_at"),
+  metadata: json("metadata").$type<Record<string, any>>(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
