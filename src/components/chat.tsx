@@ -107,11 +107,11 @@ export default function Chat(props: {
     <div className="relative h-full w-full" style={{ transform: "translateZ(0)" }}>
       {/* Messages feed */}
       {isFeedOpen && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-24 z-10 flex justify-center px-4">
+        <div className="pointer-events-none fixed inset-x-0 bottom-16 z-10 flex justify-center px-4">
           <div className="pointer-events-auto origin-bottom w-full max-w-3xl overflow-hidden">
             <div
               ref={feedRef}
-              className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pb-2 pr-1 pl-1 no-scrollbar"
+                className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pb-2 pr-1 pl-1 no-scrollbar"
             >
               {messages.map((message: any) => {
                 const text = Array.isArray(message.parts)
@@ -124,7 +124,11 @@ export default function Chat(props: {
                 const isUser = message.role === "user";
                 return (
                   <div key={message.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-                    <div className="max-w-[85%] rounded-2xl border px-4 py-4 text-[14px] leading-relaxed shadow-sm backdrop-blur-sm bg-white/45 border-white/30 text-black/70">
+                    <div
+                      className={`pointer-events-auto max-w-[85%] rounded-2xl border px-3 py-3 text-[14px] leading-relaxed shadow-sm backdrop-blur-sm bg-white/45 border-white/30 text-black/70 ${
+                        isUser ? "mr-2" : "ml-2"
+                      }`}
+                    >
                       <div className="whitespace-pre-wrap">{text}</div>
                     </div>
                   </div>
@@ -136,13 +140,13 @@ export default function Chat(props: {
       )}
 
       {/* Prompt bar */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-[max(16px,env(safe-area-inset-bottom))] flex justify-center px-4">
+      <div className="pointer-events-none fixed inset-x-0 bottom-[max(8px,env(safe-area-inset-bottom))] flex justify-center px-4">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             onSubmit();
           }}
-          className="pointer-events-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-white/20 bg-white/60 p-2 backdrop-blur-2xl shadow-xl shadow-slate-700/5 hover:scale-[103%] transition-all duration-200"
+          className="pointer-events-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-white/20 bg-white/60 p-2 backdrop-blur-lg shadow-xl shadow-slate-700/5 hover:scale-[103%] transition-all duration-200"
           aria-label="Prompt input"
         >
           <input
@@ -210,8 +214,7 @@ export default function Chat(props: {
               type="submit"
               title="Send"
               aria-label="Send"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25 disabled:opacity-50"
-              disabled={!input.trim()}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
             >
               <svg
                 width="18"
@@ -233,9 +236,7 @@ export default function Chat(props: {
           scrollbar-width: none; /* Firefox */
         }
         .no-scrollbar::-webkit-scrollbar {
-          width: 0;
-          height: 0;
-          background: transparent; /* Chrome/Safari/Webkit */
+          display: none; /* Chrome, Safari, Opera */
         }
       `}</style>
     </div>
