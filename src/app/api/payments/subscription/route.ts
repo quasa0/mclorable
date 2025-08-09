@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/auth/stack-auth";
-import { db } from "@/db";
+import { db } from "@/db/schema";
 import { subscriptions } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 
@@ -21,13 +21,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const subscription = await db.query.subscriptions.findFirst({
-      where: and(
-        eq(subscriptions.appId, appId),
-        eq(subscriptions.userId, user.userId),
-        eq(subscriptions.status, "active")
-      ),
-    });
+    const subscription = await db
+      .select()
+      .from(subscriptions)
+      .where(
+        and(
+          eq(subscriptions.appId, appId),
+          eq(subscriptions.userId, user.userId),
+          eq(subscriptions.status, "active")
+        )
+      );
 
     if (!subscription) {
       return NextResponse.json({
@@ -38,10 +41,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       hasActiveSubscription: true,
       subscription: {
-        id: subscription.id,
-        status: subscription.status,
-        currentPeriodEnd: subscription.currentPeriodEnd,
-        productId: subscription.productId,
+        id: subscription[0].id,
+        status: subscription[0].status,
+        currentPeriodEnd: subscription[0].currentPeriodEnd,
+        productId: subscription[0].productId,
       },
     });
   } catch (error) {
