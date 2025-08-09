@@ -132,7 +132,7 @@ export function HeroSection() {
                 }}
                 asChild
               >
-                <Link href="/docs">Documentation</Link>
+
               </Button>
             </motion.div>
 
@@ -161,14 +161,7 @@ export function HeroSection() {
                 }}
                 asChild
               >
-                <Link
-                  href="https://github.com/serafimcloud/mclorable"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Github className="h-4 w-4" aria-hidden="true" />
-                  GitHub
-                </Link>
+ 
               </Button>
             </motion.div>
           </div>
@@ -206,7 +199,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="text-base sm:text-lg md:text-xl tracking-tight bg-clip-text text-transparent backdrop-blur-xl leading-[1.2] mb-8 md:mb-12 max-w-[600px] mx-auto"
+                className="text-base sm:text-lg md:text-xl tracking-tight bg-clip-text text-transparent backdrop-blur-xl leading-[1.5] mb-8 md:mb-12 max-w-[600px] mx-auto"
                 style={{
                   backgroundImage: lightGradient2,
                   WebkitBackgroundClip: "text",
@@ -236,6 +229,20 @@ export function HeroSection() {
                 />
               </motion.div>
 
+              {/* Call Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 1.05, duration: 0.8 }}
+                className="w-full max-w-2xl mx-auto mb-6 flex justify-center"
+              >
+                <Button asChild variant="outline" className="text-sm">
+                  <a href="tel:+12544778322" className="animate-rainbow-text text-transparent">Or call McLovin Now</a>
+                </Button>
+              </motion.div>
+
+              
+
               {/* Feature Icons */}
               <motion.div
                 initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
@@ -254,36 +261,7 @@ export function HeroSection() {
                   Performance-based pricing • No upfront costs
                 </p>
                 <div className="flex flex-col gap-4">
-                  {/* Feature Icons Row */}
-                  <div
-                    className="flex flex-wrap items-center justify-center gap-8 md:gap-12 max-w-[600px] mx-auto"
-                    style={{ color: lightText }}
-                  >
-                    <div className="flex flex-col items-center gap-3 group cursor-default">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 bg-white/50 backdrop-blur-sm group-hover:border-gray-300 group-hover:bg-white/80 transition-all duration-200">
-                        <Code className="w-4 h-4 text-gray-600" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-600 group-hover:text-gray-800 transition-colors">
-                        Code Generation
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-3 group cursor-default">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 bg-white/50 backdrop-blur-sm group-hover:border-gray-300 group-hover:bg-white/80 transition-all duration-200">
-                        <Zap className="w-4 h-4 text-gray-600" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-600 group-hover:text-gray-800 transition-colors">
-                        Instant Deploy
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-3 group cursor-default">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 bg-white/50 backdrop-blur-sm group-hover:border-gray-300 group-hover:bg-white/80 transition-all duration-200">
-                        <Coffee className="w-4 h-4 text-gray-600" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-600 group-hover:text-gray-800 transition-colors">
-                        Zero Config
-                      </span>
-                    </div>
-                  </div>
+
                 </div>
               </motion.div>
             </div>
