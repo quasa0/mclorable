@@ -18,8 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Adorable",
-  description: "Open Source AI App Builder",
+  title: "Mcloving - Call Your Vibecode CTO",
+  description:
+    "Your AI-powered development companion that transforms ideas into production-ready applications instantly",
   manifest: "/manifest.json",
   // viewport: {
   //   width: "device-width",
