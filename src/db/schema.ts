@@ -5,6 +5,7 @@ import {
   uuid,
   json,
   pgEnum,
+  integer,
 } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/node-postgres";
 
@@ -49,6 +50,8 @@ export const messagesTable = pgTable("messages", {
   message: json("message").notNull().$type<UIMessage>(),
 });
 
+export const apps = appsTable;
+
 export const appDeployments = pgTable("app_deployments", {
   appId: uuid("app_id")
     .notNull()
@@ -56,4 +59,42 @@ export const appDeployments = pgTable("app_deployments", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   deploymentId: text("deployment_id").notNull(),
   commit: text("commit").notNull(), // sha of the commit
+});
+
+// products table for storing polar products
+export const products = pgTable("products", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  appId: uuid("app_id")
+    .notNull()
+    .references(() => appsTable.id, { onDelete: "cascade" }),
+  polarProductId: text("polar_product_id").notNull().unique(),
+  polarPriceId: text("polar_price_id").notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: integer("price").notNull(), // in cents
+  currency: text("currency").notNull().default("USD"),
+  recurringInterval: text("recurring_interval"), // month, year, etc
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// subscriptions table for tracking user subscriptions
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  appId: uuid("app_id")
+    .notNull()
+    .references(() => appsTable.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  productId: uuid("product_id")
+    .notNull()
+    .references(() => products.id),
+  polarSubscriptionId: text("polar_subscription_id").notNull().unique(),
+  polarCustomerId: text("polar_customer_id"),
+  status: text("status").notNull(), // active, canceled, past_due, etc
+  currentPeriodStart: timestamp("current_period_start"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  canceledAt: timestamp("canceled_at"),
+  metadata: json("metadata").$type<Record<string, any>>(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
