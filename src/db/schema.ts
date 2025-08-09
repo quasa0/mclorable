@@ -98,3 +98,12 @@ export const subscriptions = pgTable("subscriptions", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// Mapping for external voice agent: phone number -> user identity
+// Note: Populate this table out-of-band when a user links their phone.
+export const userPhones = pgTable("user_phones", {
+  phoneNumber: text("phone_number").primaryKey(),
+  userId: text("user_id").notNull(),
+  freestyleIdentity: text("freestyle_identity").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

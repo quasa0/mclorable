@@ -4,6 +4,7 @@ import { memo, useId, useMemo } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeBlock, CodeBlockCode } from "./code-block";
+import { GlassEffect, GlassFilter } from "./liquidy-glass";
 
 export type MarkdownProps = {
   children: string;
@@ -48,9 +49,17 @@ const INITIAL_COMPONENTS: Partial<Components> = {
     const language = extractLanguage(className);
 
     return (
-      <CodeBlock className={className}>
-        <CodeBlockCode code={children as string} language={language} />
-      </CodeBlock>
+      <GlassEffect
+        className="rounded-[13px]"
+        overlayOpacity={0.18}
+        outlineOpacity={0.25}
+        outlineWidth={0.5}
+        style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.08), 0 0 12px rgba(0,0,0,0.04)" }}
+      >
+        <CodeBlock className={cn("bg-transparent border-0 rounded-[17px] w-full font-normal cursor-text", className)}>
+          <CodeBlockCode code={children as string} language={language} />
+        </CodeBlock>
+      </GlassEffect>
     );
   },
   pre: function PreComponent({ children }) {
@@ -91,18 +100,18 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   ),
   // Style paragraphs
   p: ({ className, children, ...props }) => (
-    <p className={cn("mb-4 leading-relaxed", className)} {...props}>
+    <p className={cn("mb-4 last:mb-0 leading-relaxed", className)} {...props}>
       {children}
     </p>
   ),
   // Style lists
   ul: ({ className, children, ...props }) => (
-    <ul className={cn("list-disc pl-6 mb-4", className)} {...props}>
+    <ul className={cn("list-disc pl-6 mb-4 last:mb-0", className)} {...props}>
       {children}
     </ul>
   ),
   ol: ({ className, children, ...props }) => (
-    <ol className={cn("list-decimal pl-6 mb-4", className)} {...props}>
+    <ol className={cn("list-decimal pl-6 mb-4 last:mb-0", className)} {...props}>
       {children}
     </ol>
   ),
@@ -115,7 +124,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   blockquote: ({ className, children, ...props }) => (
     <blockquote
       className={cn(
-        "border-l-4 border-gray-300 dark:border-gray-700 pl-4 italic my-4 text-gray-700 dark:text-gray-300",
+        "border-l-4 border-gray-300 dark:border-gray-700 pl-4 italic mt-4 mb-4 last:mb-0 text-gray-700 dark:text-gray-300",
         className,
       )}
       {...props}
@@ -125,7 +134,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   ),
   // Style tables
   table: ({ className, children, ...props }) => (
-    <div className="overflow-x-auto mb-4">
+    <div className="overflow-x-auto mb-4 last:mb-0">
       <table
         className={cn(
           "min-w-full divide-y divide-gray-300 dark:divide-gray-700",
@@ -186,7 +195,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   // Style images
   img: ({ className, alt, ...props }) => (
     <img
-      className={cn("max-w-full h-auto rounded-md my-4", className)}
+      className={cn("max-w-full h-auto rounded-md my-4 last:mb-0", className)}
       alt={alt}
       {...props}
     />
@@ -194,7 +203,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
   // Style horizontal rules
   hr: ({ className, ...props }) => (
     <hr
-      className={cn("my-8 border-gray-300 dark:border-gray-700", className)}
+      className={cn("my-8 last:mb-0 border-gray-300 dark:border-gray-700", className)}
       {...props}
     />
   ),
@@ -232,7 +241,8 @@ function MarkdownComponent({
   const blocks = useMemo(() => parseMarkdownIntoBlocks(children), [children]);
 
   return (
-    <div className={className}>
+    <div className={cn("[&>*:last-child]:mb-0", className)}>
+      <GlassFilter />
       {blocks.map((block, index) => (
         <MemoizedMarkdownBlock
           key={`${blockId}-block-${index}`}

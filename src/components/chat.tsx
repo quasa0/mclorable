@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { chatState } from "@/actions/chat-streaming";
 import { CompressedImage } from "@/lib/image-compression";
 import { useChatSafe } from "./use-chat";
+import { GlassEffect, GlassFilter } from "./ui/liquidy-glass";
+import { Markdown } from "./ui/markdown";
 
 export default function Chat(props: {
   appId: string;
@@ -104,14 +106,15 @@ export default function Chat(props: {
   }, [messages.length]);
 
   return (
-    <div className="relative h-full w-full" style={{ transform: "translateZ(0)" }}>
+    <div className="relative h-full w-full">
+      <GlassFilter />
       {/* Messages feed */}
       {isFeedOpen && (
         <div className="pointer-events-none fixed inset-x-0 bottom-16 z-10 flex justify-center px-4">
           <div className="pointer-events-auto origin-bottom w-full max-w-3xl overflow-hidden">
             <div
               ref={feedRef}
-                className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pb-2 pr-1 pl-1 no-scrollbar"
+                className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pt-3 pb-2 pr-1 pl-1 no-scrollbar"
             >
               {messages.map((message: any) => {
                 const text = Array.isArray(message.parts)
@@ -123,14 +126,23 @@ export default function Chat(props: {
                 if (!text) return null;
                 const isUser = message.role === "user";
                 return (
-                  <div key={message.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-                    <div
-                      className={`pointer-events-auto max-w-[85%] rounded-2xl border px-3 py-3 text-[14px] leading-relaxed shadow-sm backdrop-blur-sm bg-white/45 border-white/30 text-black/70 ${
-                        isUser ? "mr-2" : "ml-2"
-                      }`}
+                  <div
+                    key={message.id}
+                    className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                  >
+                    <GlassEffect
+                      className={`pointer-events-auto ${isUser ? "min-w-[30%]" : "min-w-[60%]"} max-w-[85%] rounded-xl ${isUser ? "mr-2" : "ml-2"}`}
+                      overlayOpacity={0.18}
+                      outlineOpacity={0.25}
+                      outlineWidth={0.5}
+                      style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.12), 0 0 8px rgba(0, 0, 0, 0.06)" }}
                     >
-                      <div className="whitespace-pre-wrap">{text}</div>
-                    </div>
+                      <Markdown
+                        className={`px-3 py-3 w-full text-[14px] leading-relaxed text-black/70 font-normal cursor-text ${isUser ? "text-right" : ""}`}
+                      >
+                        {text}
+                      </Markdown>
+                    </GlassEffect>
                   </div>
                 );
               })}
@@ -141,14 +153,19 @@ export default function Chat(props: {
 
       {/* Prompt bar */}
       <div className="pointer-events-none fixed inset-x-0 bottom-[max(8px,env(safe-area-inset-bottom))] flex justify-center px-4">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
-          }}
-          className="pointer-events-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-white/20 bg-white/60 p-2 backdrop-blur-lg shadow-xl shadow-slate-700/5 hover:scale-[103%] transition-all duration-200"
-          aria-label="Prompt input"
+        <GlassEffect
+          className="pointer-events-auto w-full max-w-3xl rounded-xl p-2 hover:scale-[103%] transition-all duration-200"
+          overlayOpacity={0.18}
+          outlineOpacity={0.25}
+          outlineWidth={0.5}
         >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+            className="flex w-full items-center gap-2"
+          >
           <input
             type="text"
             name="prompt"
@@ -160,77 +177,75 @@ export default function Chat(props: {
             onChange={(e) => setInput(e.target.value)}
           />
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              title={isFeedOpen ? "Collapse messages" : "Show messages"}
-              aria-label={isFeedOpen ? "Collapse messages" : "Show messages"}
+            <GlassEffect
               onClick={() => setIsFeedOpen((v) => !v)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
+              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
+              overlayOpacity={0.18}
+              outlineOpacity={0.25}
+              outlineWidth={0.5}
+              aria-label={isFeedOpen ? 'Hide feed' : 'Show feed'}
+              role="button"
+              tabIndex={0}
             >
-              {isFeedOpen ? (
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path d="M6 15l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              ) : (
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </button>
+              <div className="h-10 w-10 flex items-center justify-center">
+                {isFeedOpen ? (
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="block"
+                  >
+                    <path d="M6 15l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="block"
+                  >
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </div>
+            </GlassEffect>
             <input ref={fileInputRef} type="file" className="hidden" onChange={() => {}} />
-            <button
-              type="button"
-              title="Attach"
-              aria-label="Attach file"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
-              onClick={() => fileInputRef.current?.click()}
+            <GlassEffect
+              onClick={() => onSubmit()}
+              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
+              overlayOpacity={0.18}
+              outlineOpacity={0.25}
+              outlineWidth={0.5}
+              aria-label="Send message"
+              role="button"
+              tabIndex={0}
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path d="M7 12l5-5a3.5 3.5 0 115 5l-6.5 6.5a5 5 0 11-7.07-7.07L12 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button
-              type="submit"
-              title="Send"
-              aria-label="Send"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path d="M4 12l16-8-6 16-2-6-8-2z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+              <div className="h-10 w-10 flex items-center justify-center">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="block"
+                >
+                  <path d="M4 12l16-8-6 16-2-6-8-2z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </GlassEffect>
           </div>
-        </form>
+          </form>
+        </GlassEffect>
       </div>
       <style jsx>{`
+        .fade-top {
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 24px);
+          mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1) 24px);
+        }
         .no-scrollbar {
           -ms-overflow-style: none; /* IE and Edge */
           scrollbar-width: none; /* Firefox */

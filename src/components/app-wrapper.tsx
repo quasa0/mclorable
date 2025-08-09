@@ -6,6 +6,8 @@ import { TopBar } from "./topbar";
 import WebView from "./webview";
 import { UIMessage } from "ai";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GlassEffect } from "./ui/liquidy-glass";
+import { RefreshCwIcon, TerminalIcon, HomeIcon } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -97,6 +99,62 @@ export default function AppWrapper({
             </div>
           </div>
         </QueryClientProvider>
+
+        {/* Bottom-left home button */}
+        <div className="pointer-events-none fixed left-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30">
+          <div className="pointer-events-auto flex items-center gap-2">
+            <GlassEffect
+              className="rounded-lg px-3 py-2 hover:scale-[103%]"
+              href="/"
+              target="_self"
+              overlayOpacity={0.18}
+              outlineOpacity={0.25}
+              outlineWidth={0.5}
+              aria-label="Home"
+            >
+              <HomeIcon className="h-4 w-4" />
+            </GlassEffect>
+          </div>
+        </div>
+
+        {/* Bottom-right action overlay */}
+        <div className="pointer-events-none fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 flex flex-col gap-2">
+          <div className="pointer-events-auto flex items-center gap-2">
+            <GlassEffect
+              className="rounded-lg px-3 py-2 hover:scale-[103%]"
+              onClick={refreshFunction || undefined}
+              style={{ opacity: refreshFunction ? 1 : 0.5, pointerEvents: refreshFunction ? "auto" : "none" }}
+              overlayOpacity={0.18}
+              outlineOpacity={0.25}
+              outlineWidth={0.5}
+              aria-label="Refresh"
+            >
+              <RefreshCwIcon className="h-4 w-4" />
+            </GlassEffect>
+            <GlassEffect
+              className="rounded-lg px-3 py-2 hover:scale-[103%]"
+              href={codeServerUrl}
+              target="_blank"
+              overlayOpacity={0.18}
+              outlineOpacity={0.25}
+              outlineWidth={0.5}
+              aria-label="Open in VS Code"
+            >
+              <img src="/logos/vscode.svg" className="h-4 w-4" alt="VS Code Logo" />
+            </GlassEffect>
+            <GlassEffect
+              className="rounded-lg px-3 py-2 hover:scale-[103%]"
+              href={consoleUrl}
+              target="_blank"
+              overlayOpacity={0.18}
+              outlineOpacity={0.25}
+              outlineWidth={0.5}
+              aria-label="Open Terminal"
+            >
+              <TerminalIcon className="h-4 w-4" />
+            </GlassEffect>
+          </div>
+        </div>
       </div>
     </div>
   );

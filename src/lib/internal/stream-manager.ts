@@ -225,7 +225,10 @@ export async function sendMessageWithStreaming(
   appId: string,
   mcpUrl: string,
   fs: FreestyleDevServerFilesystem,
-  message: UIMessage
+  message: UIMessage,
+  options?: {
+    onFinish?: () => Promise<void> | void;
+  }
 ) {
   const controller = new AbortController();
   let shouldAbort = false;
@@ -272,6 +275,13 @@ export async function sendMessageWithStreaming(
       },
       onFinish: async () => {
         await handleStreamLifecycle(appId, "finish");
+        if (options?.onFinish) {
+          try {
+            await options.onFinish();
+          } catch (err) {
+            console.error("Error in onFinish hook:", err);
+          }
+        }
       },
       abortSignal: controller.signal,
     }

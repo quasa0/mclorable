@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { AnimatedPromptInput } from "./animated-prompt-input";
-import { LiquidGlass } from "./ui/liquid-glass";
 
 export function HeroSection() {
   const router = useRouter();
@@ -202,10 +201,6 @@ export function HeroSection() {
                   Your AI-powered CTO
                 </span>
               </motion.h1>
-
-              <div className="absolute inset-0 z-20 pointer-events-none">
-                <LiquidGlass className="h-48 w-80 rounded-lg" />
-              </div>
 
               <motion.h2
                 initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}

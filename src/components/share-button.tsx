@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { GlassEffect } from "@/components/ui/liquidy-glass";
 import {
   Share2Icon,
   LinkIcon,
@@ -22,13 +23,29 @@ import { Label } from "@/components/ui/label";
 import { publishApp } from "@/actions/publish-app";
 import { useState } from "react";
 
+type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link";
+
 interface ShareButtonProps {
   className?: string;
   domain?: string;
   appId: string;
+  variant?: ButtonVariant;
+  useGlassTrigger?: boolean;
+  glassClassName?: string;
+  glassProps?: {
+    overlayOpacity?: number;
+    outlineOpacity?: number;
+    outlineWidth?: number;
+  };
 }
 
-export function ShareButton({ className, domain, appId }: ShareButtonProps) {
+export function ShareButton({ className, domain, appId, variant = "ghost", useGlassTrigger = false, glassClassName = "", glassProps }: ShareButtonProps) {
   // The domain may be undefined if no previewDomain exists in the database
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -61,14 +78,25 @@ export function ShareButton({ className, domain, appId }: ShareButtonProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={`flex items-center gap-1 ${className || ""}`}
-        >
-          Share
-          <Share2Icon className="h-4 w-4 ml-1" />
-        </Button>
+        {useGlassTrigger ? (
+          <GlassEffect
+            className={`rounded-lg px-3 py-2 hover:scale-[103%] ${className || ""} ${glassClassName}`}
+            overlayOpacity={glassProps?.overlayOpacity ?? 0.18}
+            outlineOpacity={glassProps?.outlineOpacity ?? 0.25}
+            outlineWidth={glassProps?.outlineWidth ?? 0.5}
+          >
+            <span className="flex items-center gap-2">Share <Share2Icon className="h-4 w-4 ml-1" /></span>
+          </GlassEffect>
+        ) : (
+          <Button
+            variant={variant}
+            size="sm"
+            className={`flex items-center gap-1 ${className || ""}`}
+          >
+            Share
+            <Share2Icon className="h-4 w-4 ml-1" />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md w-[95vw] max-w-[450px]">
         <DialogHeader>
