@@ -43,8 +43,8 @@ function setupNewApp() {
   return userAppId;
 }
 
-// Run the script
-if (require.main === module) {
+// Run the script if executed directly (supports both CJS and ESM)
+if (require.main === module || import.meta.url === `file://${process.argv[1]}`) {
   setupNewApp();
 }
 
