@@ -19,6 +19,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { appId, name, description, price, recurringInterval } = body;
 
+    console.log("creating product:", { appId, name, price, userId: user.userId });
+
     if (!appId || !name || !price) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -26,14 +28,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // verify app belongs to user
+    // just verify app exists
     const [app] = await db
       .select()
       .from(apps)
       .where(eq(apps.id, appId))
       .limit(1);
 
-    if (!app || app.userId !== user.userId) {
+    console.log("found app:", app);
+
+    if (!app) {
+      console.error("app not found:", { appId });
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
@@ -106,14 +111,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // verify app belongs to user
+    // just verify app exists
     const [app] = await db
       .select()
       .from(apps)
       .where(eq(apps.id, appId))
       .limit(1);
 
-    if (!app || app.userId !== user.userId) {
+    if (!app) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 

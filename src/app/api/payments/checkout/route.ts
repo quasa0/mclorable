@@ -22,14 +22,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // verify app belongs to user
+    // just verify app exists
     const [app] = await db
       .select()
       .from(apps)
       .where(eq(apps.id, appId))
       .limit(1);
 
-    if (!app || app.userId !== user.userId) {
+    if (!app) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
