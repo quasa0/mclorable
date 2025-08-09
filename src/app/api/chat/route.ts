@@ -1,6 +1,14 @@
 import { getApp } from "@/actions/get-app";
 import { freestyle } from "@/lib/freestyle";
 import { getAppIdFromHeaders } from "@/lib/utils";
+import { db, appsTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { sendSMSSkipCalls } from "@/lib/sendSMS";
+import {
+  adjectives,
+  animals,
+  uniqueNamesGenerator,
+} from "unique-names-generator";
 import { UIMessage } from "ai";
 import { builderAgent } from "@/mastra/agents/builder";
 
@@ -20,6 +28,7 @@ import { NextRequest } from "next/server";
 export async function POST(req: NextRequest) {
   console.log("creating new chat stream");
   const appId = getAppIdFromHeaders(req);
+  const phone = req.headers.get("X-User-Phone");
 
   if (!appId) {
     return new Response("Missing App Id header", { status: 400 });
@@ -48,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   const { messages }: { messages: UIMessage[] } = await req.json();
 
-  const { mcpEphemeralUrl, fs } = await freestyle.requestDevServer({
+  const { mcpEphemeralUrl, fs, ephemeralUrl } = await freestyle.requestDevServer({
     repoId: app.info.gitRepo,
   });
 
@@ -57,7 +66,63 @@ export async function POST(req: NextRequest) {
     appId,
     mcpEphemeralUrl,
     fs,
-    messages.at(-1)!
+    messages.at(-1)!,
+    {
+      onFinish: async () => {
+        try {
+          if (!phone) return;
+
+          // Prefer sharing the dev server (ephemeral) URL if available
+          let shareUrl = ephemeralUrl ?? null;
+
+          if (!shareUrl) {
+            // Fallback to preview domain (stable) if dev server URL isn't available
+            let previewDomain = app.info.previewDomain;
+            if (!previewDomain) {
+              if (!process.env.PREVIEW_DOMAIN) {
+                console.warn("PREVIEW_DOMAIN not set; no URL to share");
+                return;
+              }
+              const domainPrefix = uniqueNamesGenerator({
+                dictionaries: [adjectives, animals],
+                separator: "",
+                length: 2,
+              });
+              const domain = `${domainPrefix}.${process.env.PREVIEW_DOMAIN}`;
+              await db
+                .update(appsTable)
+                .set({ previewDomain: domain })
+                .where(eq(appsTable.id, appId))
+                .execute();
+              previewDomain = domain;
+
+              // Deploy latest to preview domain
+              await freestyle.deployWeb(
+                {
+                  kind: "git",
+                  url: `https://git.freestyle.sh/${app.info.gitRepo}`,
+                },
+                {
+                  build: true,
+                  domains: [previewDomain!],
+                }
+              );
+            }
+
+            shareUrl = previewDomain!.startsWith("http")
+              ? previewDomain!
+              : `https://${previewDomain}`;
+          }
+
+          await sendSMSSkipCalls(
+            phone,
+            `Your app is ready! Preview: ${shareUrl}`
+          );
+        } catch (err) {
+          console.error("Failed to send SMS or prepare preview:", err);
+        }
+      },
+    }
   );
 
   return resumableStream.response();
