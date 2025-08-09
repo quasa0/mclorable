@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Chat from "./chat";
 import { TopBar } from "./topbar";
 import WebView from "./webview";
@@ -33,6 +33,12 @@ export default function AppWrapper({
   domain?: string;
   running: boolean;
 }) {
+  const [refreshFunction, setRefreshFunction] = useState<(() => void) | null>(null);
+
+  const handleRefreshReady = useCallback((refreshFn: () => void) => {
+    setRefreshFunction(() => refreshFn);
+  }, []);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -47,12 +53,21 @@ export default function AppWrapper({
         repoId={repoId}
         consoleUrl={consoleUrl}
         codeServerUrl={codeServerUrl}
+        domain={domain}
+        appId={appId}
+        onRefresh={refreshFunction || undefined}
       />
 
       <div className="relative flex-1 overflow-hidden">
         {/* Preview fills the background */}
         <div className="absolute inset-0">
-          <WebView repo={repo} baseId={baseId} appId={appId} domain={domain} />
+          <WebView 
+            repo={repo} 
+            baseId={baseId} 
+            appId={appId} 
+            domain={domain} 
+            onRefreshReady={handleRefreshReady}
+          />
         </div>
 
         {/* Gradient underlay pinned to bottom across whole page (behind chat and preview) */}

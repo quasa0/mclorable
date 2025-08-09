@@ -4,6 +4,7 @@ import {
   GlobeIcon,
   HomeIcon,
   TerminalIcon,
+  RefreshCwIcon,
 } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -15,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { ShareButton } from "./share-button";
 
 export function TopBar({
   appName,
@@ -22,12 +24,18 @@ export function TopBar({
   repoId,
   consoleUrl,
   codeServerUrl,
+  domain,
+  appId,
+  onRefresh,
 }: {
   appName: string;
   children?: React.ReactNode;
   repoId: string;
   consoleUrl: string;
   codeServerUrl: string;
+  domain?: string;
+  appId: string;
+  onRefresh?: () => void;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -37,22 +45,32 @@ export function TopBar({
         <HomeIcon className="h-5 w-5" />
       </Link>
 
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogTrigger asChild>
-          <Button size="sm" variant={"ghost"}>
-            <img
-              src="/logos/vscode.svg"
-              className="h-4 w-4"
-              alt="VS Code Logo"
-            />
-            {/* <img
-              src="/logos/cursor.png"
-              className="h-4 w-4"
-              alt="Cursor Logo"
-            /> */}
-            <TerminalIcon className="h-4 w-4" />
-          </Button>
-        </DialogTrigger>
+      <div className="flex items-center gap-2">
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          onClick={onRefresh}
+          disabled={!onRefresh}
+        >
+          <RefreshCwIcon />
+        </Button>
+        <ShareButton domain={domain} appId={appId} />
+        <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" variant={"ghost"}>
+              <img
+                src="/logos/vscode.svg"
+                className="h-4 w-4"
+                alt="VS Code Logo"
+              />
+              {/* <img
+                src="/logos/cursor.png"
+                className="h-4 w-4"
+                alt="Cursor Logo"
+              /> */}
+              <TerminalIcon className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Open In</DialogTitle>
@@ -141,7 +159,8 @@ export function TopBar({
             </div>
           </div>
         </DialogContent>
-      </Dialog>
+        </Dialog>
+      </div>
     </div>
   );
 }
