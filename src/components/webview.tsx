@@ -24,7 +24,7 @@ export default function WebView(props: {
   const devServerRef = useRef<FreestyleDevServerHandle>(null);
 
   return (
-    <div className="flex flex-col overflow-hidden h-screen border-l transition-opacity duration-700 mt-[2px]">
+    <div className="flex flex-col overflow-hidden h-full border-l transition-opacity duration-700 mt-[2px]">
       <div className="h-12 border-b border-gray-200 items-center flex px-2 bg-background sticky top-0 justify-end gap-2">
         <Button
           variant={"ghost"}
