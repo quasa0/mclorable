@@ -22,13 +22,22 @@ import { Label } from "@/components/ui/label";
 import { publishApp } from "@/actions/publish-app";
 import { useState } from "react";
 
+type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link";
+
 interface ShareButtonProps {
   className?: string;
   domain?: string;
   appId: string;
+  variant?: ButtonVariant;
 }
 
-export function ShareButton({ className, domain, appId }: ShareButtonProps) {
+export function ShareButton({ className, domain, appId, variant = "ghost" }: ShareButtonProps) {
   // The domain may be undefined if no previewDomain exists in the database
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -62,7 +71,7 @@ export function ShareButton({ className, domain, appId }: ShareButtonProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          variant="ghost"
+          variant={variant}
           size="sm"
           className={`flex items-center gap-1 ${className || ""}`}
         >

@@ -31,22 +31,24 @@ export function TopBar({
 
       <div className="flex items-center gap-2">
         <Button
-          variant={"ghost"}
-          size={"icon"}
+          variant={"outline"}
+          size={"sm"}
           onClick={onRefresh}
           disabled={!onRefresh}
+          className="shadow-sm"
         >
-          <RefreshCwIcon />
+          <RefreshCwIcon className="h-4 w-4" />
+          <span>Refresh</span>
         </Button>
-        <ShareButton domain={domain} appId={appId} />
+        <ShareButton domain={domain} appId={appId} variant="outline" className="shadow-sm" />
         <a href={codeServerUrl} target="_blank" rel="noopener noreferrer">
-          <Button size="sm" variant="ghost" className="flex items-center gap-2">
+          <Button size="sm" variant="outline" className="flex items-center gap-2 shadow-sm">
             <img src="/logos/vscode.svg" className="h-4 w-4" alt="VS Code Logo" />
             <span>VS Code</span>
           </Button>
         </a>
         <a href={consoleUrl} target="_blank" rel="noopener noreferrer">
-          <Button size="sm" variant="ghost" className="flex items-center gap-2">
+          <Button size="sm" variant="outline" className="flex items-center gap-2 shadow-sm">
             <TerminalIcon className="h-4 w-4" />
             <span>Terminal</span>
           </Button>

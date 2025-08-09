@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { chatState } from "@/actions/chat-streaming";
 import { CompressedImage } from "@/lib/image-compression";
 import { useChatSafe } from "./use-chat";
+import { GlassEffect, GlassFilter } from "./ui/liquidy-glass";
 
 export default function Chat(props: {
   appId: string;
@@ -105,6 +106,7 @@ export default function Chat(props: {
 
   return (
     <div className="relative h-full w-full" style={{ transform: "translateZ(0)" }}>
+      <GlassFilter />
       {/* Messages feed */}
       {isFeedOpen && (
         <div className="pointer-events-none fixed inset-x-0 bottom-16 z-10 flex justify-center px-4">
@@ -141,14 +143,19 @@ export default function Chat(props: {
 
       {/* Prompt bar */}
       <div className="pointer-events-none fixed inset-x-0 bottom-[max(8px,env(safe-area-inset-bottom))] flex justify-center px-4">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
-          }}
-          className="pointer-events-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-white/20 bg-white/60 p-2 backdrop-blur-lg shadow-xl shadow-slate-700/5 hover:scale-[103%] transition-all duration-200"
-          aria-label="Prompt input"
+        <GlassEffect
+          className="pointer-events-auto w-full max-w-3xl rounded-xl p-2 hover:scale-[103%] transition-all duration-200"
+          overlayOpacity={0.18}
+          outlineOpacity={0.25}
+          outlineWidth={0.5}
         >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+            className="flex w-full items-center gap-2"
+          >
           <input
             type="text"
             name="prompt"
@@ -162,8 +169,6 @@ export default function Chat(props: {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              title={isFeedOpen ? "Collapse messages" : "Show messages"}
-              aria-label={isFeedOpen ? "Collapse messages" : "Show messages"}
               onClick={() => setIsFeedOpen((v) => !v)}
               className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
             >
@@ -174,7 +179,6 @@ export default function Chat(props: {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
                 >
                   <path d="M6 15l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -185,7 +189,6 @@ export default function Chat(props: {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
                 >
                   <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -194,8 +197,6 @@ export default function Chat(props: {
             <input ref={fileInputRef} type="file" className="hidden" onChange={() => {}} />
             <button
               type="button"
-              title="Attach"
-              aria-label="Attach file"
               className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -205,15 +206,12 @@ export default function Chat(props: {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
               >
                 <path d="M7 12l5-5a3.5 3.5 0 115 5l-6.5 6.5a5 5 0 11-7.07-7.07L12 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
             <button
               type="submit"
-              title="Send"
-              aria-label="Send"
               className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/5 text-black/50 transition active:translate-y-px active:scale-95 hover:bg-black/25"
             >
               <svg
@@ -222,13 +220,13 @@ export default function Chat(props: {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
               >
                 <path d="M4 12l16-8-6 16-2-6-8-2z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
-        </form>
+          </form>
+        </GlassEffect>
       </div>
       <style jsx>{`
         .no-scrollbar {
