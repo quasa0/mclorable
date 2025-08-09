@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Chat from "./chat";
-import { TopBar } from "./topbar";
 import WebView from "./webview";
 import { UIMessage } from "ai";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GlassEffect } from "./ui/liquidy-glass";
 import { RefreshCwIcon, TerminalIcon, HomeIcon } from "lucide-react";
+import { ProductCreationModal } from "./product-creation-modal";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +98,7 @@ export default function AppWrapper({
         {/* Bottom-right action overlay */}
         <div className="pointer-events-none fixed right-4 bottom-[max(16px,env(safe-area-inset-bottom))] z-30 flex flex-col gap-2">
           <div className="pointer-events-auto flex items-center gap-2">
+            <ProductCreationModal appId={appId} />
             <GlassEffect
               className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
               onClick={refreshFunction || undefined}
