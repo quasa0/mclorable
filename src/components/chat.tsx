@@ -142,7 +142,7 @@ export default function Chat(props: {
             e.preventDefault();
             onSubmit();
           }}
-          className="pointer-events-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-white/20 bg-white/60 p-2 backdrop-blur-lg shadow-xl shadow-slate-700/5 hover:scale-[103%] transition-all duration-200"
+          className="pointer-events-auto flex w-full max-w-3xl items-center gap-2 rounded-2xl border border-white/20 bg-white/60 p-2 backdrop-blur-2xl shadow-xl shadow-slate-700/5 hover:scale-[103%] transition-all duration-200"
           aria-label="Prompt input"
         >
           <input

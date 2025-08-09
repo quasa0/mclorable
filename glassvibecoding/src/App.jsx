@@ -48,7 +48,7 @@ export default function App() {
       <div className="absolute inset-0">
         <iframe
           title="Golden Doodles site"
-          src="http://booking.com"
+          src="https://cluely.com/"
           className="absolute inset-0 h-full w-full border-0"
           referrerPolicy="no-referrer"
           allow="fullscreen"

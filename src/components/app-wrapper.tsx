@@ -55,6 +55,25 @@ export default function AppWrapper({
           <WebView repo={repo} baseId={baseId} appId={appId} domain={domain} />
         </div>
 
+        {/* Gradient underlay pinned to bottom across whole page (behind chat and preview) */}
+        <div
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-[250px] mix-blend-normal"
+          aria-hidden
+        >
+          <div
+            className="absolute inset-0 h-[250px] bg-gradient-to-t from-black/10 to-transparent"
+            style={{
+              mask: 'linear-gradient(rgba(255, 255, 255, 0.25), black, black)',
+              WebkitMask: 'linear-gradient(rgba(255, 255, 255, 0.25), black, black)',
+              maskSize: 'auto',
+              maskComposite: 'add',
+              maskMode: 'match-source',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)'
+            }}
+          />
+        </div>
+
         {/* Bottom-centered chat overlay */}
         <QueryClientProvider client={queryClient}>
           <div className="pointer-events-none fixed inset-x-0 bottom-[max(16px,env(safe-area-inset-bottom))] z-20 flex justify-center px-4">

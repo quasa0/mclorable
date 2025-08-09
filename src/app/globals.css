@@ -409,3 +409,24 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
 }
+
+/* Gradient backdrop blur overlay: stronger blur at bottom, fades upward */
+.blur-gradient-overlay {
+  backdrop-filter: blur(28px) saturate(120%);
+  -webkit-backdrop-filter: blur(28px) saturate(120%);
+  background: transparent;
+  mask-image: linear-gradient(to top,
+      rgb(0 0 0 / 1) 35%,
+      rgb(0 0 0 / 0.7) 58%,
+      rgb(0 0 0 / 0.3) 80%,
+      rgb(0 0 0 / 0) 100%);
+  -webkit-mask-image: linear-gradient(to top,
+      rgb(0 0 0 / 1) 35%,
+      rgb(0 0 0 / 0.7) 58%,
+      rgb(0 0 0 / 0.3) 80%,
+      rgb(0 0 0 / 0) 100%);
+}
+
+.dark .blur-gradient-overlay {
+  background: transparent;
+}
