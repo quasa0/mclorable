@@ -1,8 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // remove standalone for vercel deployment
-  // output: "standalone", 
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -10,11 +8,22 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   devIndicators: false,
-  // increase build timeout
   experimental: {
-    // increase build worker timeout
     workerThreads: false,
     cpus: 1,
+  },
+  // skip validation during builds
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
+    return config;
   },
 };
 
