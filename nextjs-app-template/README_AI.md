@@ -1,0 +1,1 @@
+Make sure to use the shadcn components in the `components/ui` directory when you can. When you create new components, put them in the `components` directory. It's generally best not to edit files in `components/ui`, but you can if needed.

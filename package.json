@@ -35,7 +35,7 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.42.0",
     "drizzle-zod": "^0.7.1",
-    "freestyle-sandboxes": "^0.0.92",
+    "freestyle-sandboxes": "^0.0.93",
     "isomorphic-git": "^1.30.1",
     "lucide-react": "^0.487.0",
     "marked": "^15.0.8",
