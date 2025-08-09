@@ -2,57 +2,55 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/schema";
 import { products, subscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { verifyWebhookSignature } from "@/lib/polar";
+import { constructWebhookEvent } from "@/lib/stripe";
+import Stripe from "stripe";
 
-const POLAR_WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET!;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(request: NextRequest) {
   try {
-    const signature = request.headers.get("polar-signature") || "";
+    const signature = request.headers.get("stripe-signature") || "";
     const body = await request.text();
 
-    // verify webhook signature
-    if (POLAR_WEBHOOK_SECRET) {
-      const isValid = await verifyWebhookSignature(
-        body,
-        signature,
-        POLAR_WEBHOOK_SECRET
+    // verify webhook signature and construct event
+    let event: Stripe.Event;
+    try {
+      event = await constructWebhookEvent(body, signature, STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      console.error("webhook signature verification failed:", err);
+      return NextResponse.json(
+        { error: "Invalid signature" },
+        { status: 401 }
       );
-      if (!isValid) {
-        return NextResponse.json(
-          { error: "Invalid signature" },
-          { status: 401 }
-        );
-      }
     }
 
-    const event = JSON.parse(body);
-    console.log("received polar webhook:", event.type);
+    console.log("received stripe webhook:", event.type);
 
     switch (event.type) {
-      case "subscription.created":
-      case "subscription.active": {
-        const data = event.data;
-        const { appId, userId } = data.metadata || {};
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
+        const subscription = event.data.object as Stripe.Subscription;
+        const { appId, userId } = subscription.metadata || {};
 
         if (!appId || !userId) {
           console.error("missing metadata in subscription event");
           return NextResponse.json({ received: true });
         }
 
-        // find product by polar product id
+        // find product by stripe product id
+        const productId = subscription.items.data[0]?.price.product as string;
         const product = await db.query.products.findFirst({
-          where: eq(products.polarProductId, data.productId),
+          where: eq(products.stripeProductId, productId),
         });
 
         if (!product) {
-          console.error("product not found:", data.productId);
+          console.error("product not found:", productId);
           return NextResponse.json({ received: true });
         }
 
         // upsert subscription
         const existingSubscription = await db.query.subscriptions.findFirst({
-          where: eq(subscriptions.polarSubscriptionId, data.id),
+          where: eq(subscriptions.stripeSubscriptionId, subscription.id),
         });
 
         if (existingSubscription) {
@@ -60,9 +58,10 @@ export async function POST(request: NextRequest) {
           await db
             .update(subscriptions)
             .set({
-              status: "active",
-              currentPeriodStart: new Date(data.currentPeriodStart),
-              currentPeriodEnd: new Date(data.currentPeriodEnd),
+              status: subscription.status,
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              stripeCustomerId: subscription.customer as string,
               updatedAt: new Date(),
             })
             .where(eq(subscriptions.id, existingSubscription.id));
@@ -72,37 +71,19 @@ export async function POST(request: NextRequest) {
             appId,
             userId,
             productId: product.id,
-            polarSubscriptionId: data.id,
-            polarCustomerId: data.customerId,
-            status: "active",
-            currentPeriodStart: new Date(data.currentPeriodStart),
-            currentPeriodEnd: new Date(data.currentPeriodEnd),
-            metadata: data.metadata,
+            stripeSubscriptionId: subscription.id,
+            stripeCustomerId: subscription.customer as string,
+            status: subscription.status,
+            currentPeriodStart: new Date(subscription.current_period_start * 1000),
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            metadata: subscription.metadata,
           });
         }
         break;
       }
 
-      case "subscription.updated": {
-        const data = event.data;
-        await db
-          .update(subscriptions)
-          .set({
-            status: data.status,
-            currentPeriodStart: data.currentPeriodStart
-              ? new Date(data.currentPeriodStart)
-              : null,
-            currentPeriodEnd: data.currentPeriodEnd
-              ? new Date(data.currentPeriodEnd)
-              : null,
-            updatedAt: new Date(),
-          })
-          .where(eq(subscriptions.polarSubscriptionId, data.id));
-        break;
-      }
-
-      case "subscription.canceled": {
-        const data = event.data;
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
         await db
           .update(subscriptions)
           .set({
@@ -110,19 +91,35 @@ export async function POST(request: NextRequest) {
             canceledAt: new Date(),
             updatedAt: new Date(),
           })
-          .where(eq(subscriptions.polarSubscriptionId, data.id));
+          .where(eq(subscriptions.stripeSubscriptionId, subscription.id));
         break;
       }
 
-      case "subscription.revoked": {
-        const data = event.data;
-        await db
-          .update(subscriptions)
-          .set({
-            status: "revoked",
-            updatedAt: new Date(),
-          })
-          .where(eq(subscriptions.polarSubscriptionId, data.id));
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as Stripe.Invoice;
+        if (invoice.subscription) {
+          await db
+            .update(subscriptions)
+            .set({
+              status: "active",
+              updatedAt: new Date(),
+            })
+            .where(eq(subscriptions.stripeSubscriptionId, invoice.subscription as string));
+        }
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const invoice = event.data.object as Stripe.Invoice;
+        if (invoice.subscription) {
+          await db
+            .update(subscriptions)
+            .set({
+              status: "past_due",
+              updatedAt: new Date(),
+            })
+            .where(eq(subscriptions.stripeSubscriptionId, invoice.subscription as string));
+        }
         break;
       }
 

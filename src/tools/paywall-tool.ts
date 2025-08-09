@@ -9,7 +9,7 @@ export const integratePaywallTool = createTool({
   name: "Integrate Paywall",
   description: "Generate and integrate a paywall component into the customer's app",
   inputSchema: z.object({
-    productPriceId: z.string().describe("The Polar product price ID"),
+    stripePriceId: z.string().describe("The Stripe price ID"),
     type: z.enum(paywallTypes).describe("Type of paywall to create"),
     style: z.enum(paywallStyles).describe("Visual style of the paywall"),
     location: z.string().describe("Where to add the paywall (file path or component)"),
@@ -19,14 +19,14 @@ export const integratePaywallTool = createTool({
     description: z.string().optional(),
   }),
   execute: async (input) => {
-    const { productPriceId, type, style, features, buttonText, title, description } = input;
+    const { stripePriceId, type, style, features, buttonText, title, description } = input;
 
     // generate paywall component code based on type and style
     let componentCode = "";
 
     if (type === "modal") {
       componentCode = generateModalPaywall({
-        productPriceId,
+        stripePriceId,
         style,
         features,
         buttonText,
@@ -35,7 +35,7 @@ export const integratePaywallTool = createTool({
       });
     } else if (type === "inline") {
       componentCode = generateInlinePaywall({
-        productPriceId,
+        stripePriceId,
         style,
         features,
         buttonText,
@@ -44,7 +44,7 @@ export const integratePaywallTool = createTool({
       });
     } else if (type === "full-page") {
       componentCode = generateFullPagePaywall({
-        productPriceId,
+        stripePriceId,
         style,
         features,
         buttonText,
@@ -53,7 +53,7 @@ export const integratePaywallTool = createTool({
       });
     } else if (type === "button") {
       componentCode = generateButtonPaywall({
-        productPriceId,
+        stripePriceId,
         buttonText,
       });
     }
@@ -76,7 +76,7 @@ export const integratePaywallTool = createTool({
 });
 
 function generateModalPaywall(params: any) {
-  const { productPriceId, style, features, buttonText, title, description } = params;
+  const { stripePriceId, style, features, buttonText, title, description } = params;
   
   return `
 "use client";
@@ -103,7 +103,7 @@ export function PaywallModal() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productPriceId: "${productPriceId}",
+          priceId: "${stripePriceId}",
           appId: window.location.pathname.split("/")[2], // extract app id
         }),
       });
@@ -145,7 +145,7 @@ export function PaywallModal() {
 }
 
 function generateInlinePaywall(params: any) {
-  const { productPriceId, style, features, buttonText, title, description } = params;
+  const { stripePriceId, style, features, buttonText, title, description } = params;
   
   return `
 "use client";
@@ -164,7 +164,7 @@ export function PaywallCard() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productPriceId: "${productPriceId}",
+          priceId: "${stripePriceId}",
           appId: window.location.pathname.split("/")[2],
         }),
       });
@@ -204,7 +204,7 @@ export function PaywallCard() {
 }
 
 function generateFullPagePaywall(params: any) {
-  const { productPriceId, style, features, buttonText, title, description } = params;
+  const { stripePriceId, style, features, buttonText, title, description } = params;
   
   return `
 "use client";
@@ -223,7 +223,7 @@ export function PaywallPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productPriceId: "${productPriceId}",
+          priceId: "${stripePriceId}",
           appId: window.location.pathname.split("/")[2],
         }),
       });
@@ -275,7 +275,7 @@ export function PaywallPage() {
 }
 
 function generateButtonPaywall(params: any) {
-  const { productPriceId, buttonText } = params;
+  const { stripePriceId, buttonText } = params;
   
   return `
 "use client";
@@ -292,7 +292,7 @@ export function SubscribeButton() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productPriceId: "${productPriceId}",
+          priceId: "${stripePriceId}",
           appId: window.location.pathname.split("/")[2],
         }),
       });

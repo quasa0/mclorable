@@ -61,18 +61,18 @@ export const appDeployments = pgTable("app_deployments", {
   commit: text("commit").notNull(), // sha of the commit
 });
 
-// products table for storing polar products
+// products table for storing stripe products
 export const products = pgTable("products", {
   id: uuid("id").primaryKey().defaultRandom(),
   appId: uuid("app_id")
     .notNull()
     .references(() => appsTable.id, { onDelete: "cascade" }),
-  polarProductId: text("polar_product_id").notNull().unique(),
-  polarPriceId: text("polar_price_id").notNull(),
+  stripeProductId: text("stripe_product_id").notNull().unique(),
+  stripePriceId: text("stripe_price_id").notNull(),
   name: text("name").notNull(),
   description: text("description"),
   price: integer("price").notNull(), // in cents
-  currency: text("currency").notNull().default("USD"),
+  currency: text("currency").notNull().default("usd"),
   recurringInterval: text("recurring_interval"), // month, year, etc
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -88,8 +88,8 @@ export const subscriptions = pgTable("subscriptions", {
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id),
-  polarSubscriptionId: text("polar_subscription_id").notNull().unique(),
-  polarCustomerId: text("polar_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
+  stripeCustomerId: text("stripe_customer_id"),
   status: text("status").notNull(), // active, canceled, past_due, etc
   currentPeriodStart: timestamp("current_period_start"),
   currentPeriodEnd: timestamp("current_period_end"),

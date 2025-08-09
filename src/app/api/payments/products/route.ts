@@ -3,7 +3,7 @@ import { getUser } from "@/auth/stack-auth";
 import { db } from "@/db/schema";
 import { apps, products } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { createPolarProduct, POLAR_ORGANIZATION_ID } from "@/lib/polar";
+import { createStripeProduct, createStripePrice } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,13 +31,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
-    // create product in polar
-    const polarProduct = await createPolarProduct({
+    // create product in stripe
+    const stripeProduct = await createStripeProduct({
       name,
       description: description || `Product for ${app.name}`,
-      organizationId: POLAR_ORGANIZATION_ID,
-      price: price * 100, // convert to cents
-      recurringInterval: recurringInterval || "month",
+      metadata: {
+        appId,
+        userId: user.userId,
+      },
+    });
+
+    // create price in stripe
+    const stripePrice = await createStripePrice({
+      productId: stripeProduct.id,
+      unitAmount: price * 100, // convert to cents
+      currency: "usd",
+      recurring: recurringInterval ? { interval: recurringInterval } : undefined,
     });
 
     // store product in database
@@ -45,13 +54,13 @@ export async function POST(request: NextRequest) {
       .insert(products)
       .values({
         appId,
-        polarProductId: polarProduct.id,
-        polarPriceId: polarProduct.prices[0].id,
+        stripeProductId: stripeProduct.id,
+        stripePriceId: stripePrice.id,
         name,
         description,
         price: price * 100, // store in cents
-        currency: "USD",
-        recurringInterval: recurringInterval || "month",
+        currency: "usd",
+        recurringInterval: recurringInterval || null,
       })
       .returning();
 
@@ -62,7 +71,7 @@ export async function POST(request: NextRequest) {
         description: product.description,
         price: product.price / 100, // return in dollars
         recurringInterval: product.recurringInterval,
-        polarPriceId: product.polarPriceId,
+        stripePriceId: product.stripePriceId,
       },
     });
   } catch (error) {
@@ -112,7 +121,7 @@ export async function GET(request: NextRequest) {
         description: p.description,
         price: p.price / 100, // return in dollars
         recurringInterval: p.recurringInterval,
-        polarPriceId: p.polarPriceId,
+        stripePriceId: p.stripePriceId,
         createdAt: p.createdAt,
       })),
     });

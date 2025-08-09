@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCheckoutSession } from "@/lib/polar";
+import { createCheckoutSession } from "@/lib/stripe";
 import { getUser } from "@/auth/stack-auth";
-import { db } from "@/db";
+import { db } from "@/db/schema";
 import { apps } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { productPriceId, appId } = body;
+    const { priceId, appId } = body;
 
-    if (!productPriceId || !appId) {
+    if (!priceId || !appId) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -33,18 +33,20 @@ export async function POST(request: NextRequest) {
 
     const origin = request.headers.get("origin") || "http://localhost:3000";
     const successUrl = `${origin}/app/${appId}/payment-success`;
+    const cancelUrl = `${origin}/app/${appId}`;
 
     const checkout = await createCheckoutSession({
-      productPriceId,
-      customerId: user.userId,
+      priceId,
       successUrl,
-      appId,
-      userId: user.userId,
+      cancelUrl,
+      metadata: {
+        appId,
+        userId: user.userId,
+      },
     });
 
     return NextResponse.json({
       checkoutUrl: checkout.url,
-      clientSecret: checkout.clientSecret,
     });
   } catch (error) {
     console.error("error creating checkout session:", error);
