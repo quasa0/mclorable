@@ -39,9 +39,11 @@ export async function POST(request: NextRequest) {
 
         // find product by stripe product id
         const productId = subscription.items.data[0]?.price.product as string;
-        const product = await db.query.products.findFirst({
-          where: eq(products.stripeProductId, productId),
-        });
+        const [product] = await db
+          .select()
+          .from(products)
+          .where(eq(products.stripeProductId, productId))
+          .limit(1);
 
         if (!product) {
           console.error("product not found:", productId);
@@ -49,9 +51,11 @@ export async function POST(request: NextRequest) {
         }
 
         // upsert subscription
-        const existingSubscription = await db.query.subscriptions.findFirst({
-          where: eq(subscriptions.stripeSubscriptionId, subscription.id),
-        });
+        const [existingSubscription] = await db
+          .select()
+          .from(subscriptions)
+          .where(eq(subscriptions.stripeSubscriptionId, subscription.id))
+          .limit(1);
 
         if (existingSubscription) {
           // update existing subscription

@@ -44,6 +44,7 @@ export function ProductCreationModal({
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // include cookies for auth
         body: JSON.stringify({
           appId,
           ...formData,
@@ -52,7 +53,8 @@ export function ProductCreationModal({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create product");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to create product (${response.status})`);
       }
 
       const data = await response.json();

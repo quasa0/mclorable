@@ -7,8 +7,12 @@ import { createStripeProduct, createStripePrice } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getUser().catch(() => null);
+    const user = await getUser().catch((error) => {
+      console.error("auth error:", error);
+      return null;
+    });
     if (!user) {
+      console.error("no authenticated user found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -23,9 +27,11 @@ export async function POST(request: NextRequest) {
     }
 
     // verify app belongs to user
-    const app = await db.query.apps.findFirst({
-      where: eq(apps.id, appId),
-    });
+    const [app] = await db
+      .select()
+      .from(apps)
+      .where(eq(apps.id, appId))
+      .limit(1);
 
     if (!app || app.userId !== user.userId) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
@@ -101,18 +107,21 @@ export async function GET(request: NextRequest) {
     }
 
     // verify app belongs to user
-    const app = await db.query.apps.findFirst({
-      where: eq(apps.id, appId),
-    });
+    const [app] = await db
+      .select()
+      .from(apps)
+      .where(eq(apps.id, appId))
+      .limit(1);
 
     if (!app || app.userId !== user.userId) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
     // get products for app
-    const appProducts = await db.query.products.findMany({
-      where: eq(products.appId, appId),
-    });
+    const appProducts = await db
+      .select()
+      .from(products)
+      .where(eq(products.appId, appId));
 
     return NextResponse.json({
       products: appProducts.map((p) => ({
