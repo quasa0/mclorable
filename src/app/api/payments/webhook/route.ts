@@ -4,7 +4,7 @@ import { products, subscriptions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { verifyWebhookSignature } from "@/lib/polar";
 
-const POLAR_WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET || "";
+const POLAR_WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET!;
 
 export async function POST(request: NextRequest) {
   try {

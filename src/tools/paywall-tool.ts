@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTool } from "@mastra/core/tool";
+import { createTool } from "@mastra/core/tools";
 
 const paywallTypes = ["modal", "inline", "full-page", "button"] as const;
 const paywallStyles = ["minimal", "gradient", "card", "hero"] as const;

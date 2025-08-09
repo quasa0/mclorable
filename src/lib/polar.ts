@@ -1,6 +1,6 @@
 import { Polar } from "@polar-sh/sdk";
 
-const polarAccessToken = process.env.POLAR_ACCESS_TOKEN || "polar_oat_qGemq8ufNwek0nmox5KLYzEbvgSnoYcPhTDiB3Coht9";
+const polarAccessToken = process.env.POLAR_ACCESS_TOKEN!;
 export const POLAR_ORGANIZATION_ID = "be03f5dd-37e6-4d69-8aed-a0ab23a9cadc";
 
 export const polar = new Polar({
@@ -86,8 +86,19 @@ export async function verifyWebhookSignature(
   secret: string
 ): Promise<boolean> {
   const crypto = await import("crypto");
+  
+  // polar webhook signature format: timestamp.signature
+  const parts = signature.split('.');
+  if (parts.length !== 2) {
+    return false;
+  }
+  
+  const [timestamp, sig] = parts;
+  const signedPayload = `${timestamp}.${payload}`;
+  
   const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(payload);
+  hmac.update(signedPayload);
   const expectedSignature = hmac.digest("hex");
-  return expectedSignature === signature;
+  
+  return expectedSignature === sig;
 }

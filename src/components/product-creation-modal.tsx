@@ -14,15 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 interface ProductCreationModalProps {
   appId: string;
@@ -41,7 +33,6 @@ export function ProductCreationModal({
     price: "",
     recurringInterval: "month",
   });
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,10 +56,9 @@ export function ProductCreationModal({
       }
 
       const data = await response.json();
-      toast({
-        title: "Product created",
-        description: `Successfully created product "${data.product.name}"`,
-      });
+      
+      // show success message
+      alert(`Successfully created product "${data.product.name}"`);
 
       setOpen(false);
       setFormData({
@@ -83,11 +73,7 @@ export function ProductCreationModal({
       }
     } catch (error) {
       console.error("Error creating product:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create product. Please try again.",
-        variant: "destructive",
-      });
+      alert("Failed to create product. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -160,21 +146,18 @@ export function ProductCreationModal({
               <Label htmlFor="interval" className="text-right">
                 Billing
               </Label>
-              <Select
+              <select
+                id="interval"
                 value={formData.recurringInterval}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, recurringInterval: value })
+                onChange={(e) =>
+                  setFormData({ ...formData, recurringInterval: e.target.value })
                 }
+                className="col-span-3 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
               >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="month">Monthly</SelectItem>
-                  <SelectItem value="year">Yearly</SelectItem>
-                  <SelectItem value="week">Weekly</SelectItem>
-                </SelectContent>
-              </Select>
+                <option value="month">Monthly</option>
+                <option value="year">Yearly</option>
+                <option value="week">Weekly</option>
+              </select>
             </div>
           </div>
           <DialogFooter>
