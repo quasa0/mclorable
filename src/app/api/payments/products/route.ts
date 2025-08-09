@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth/stack-auth";
+import { getUser } from "@/auth/stack-auth";
 import { db } from "@/db/schema";
 import { apps, products } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -7,7 +7,7 @@ import { createPolarProduct, POLAR_ORGANIZATION_ID } from "@/lib/polar";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await auth();
+    const user = await getUser().catch(() => null);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       where: eq(apps.id, appId),
     });
 
-    if (!app || app.userId !== user.id) {
+    if (!app || app.userId !== user.userId) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await auth();
+    const user = await getUser().catch(() => null);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
       where: eq(apps.id, appId),
     });
 
-    if (!app || app.userId !== user.id) {
+    if (!app || app.userId !== user.userId) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 

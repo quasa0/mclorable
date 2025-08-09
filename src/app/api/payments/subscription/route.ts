@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth/stack-auth";
+import { getUser } from "@/auth/stack-auth";
 import { db } from "@/db";
 import { subscriptions } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await auth();
+    const user = await getUser().catch(() => null);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const subscription = await db.query.subscriptions.findFirst({
       where: and(
         eq(subscriptions.appId, appId),
-        eq(subscriptions.userId, user.id),
+        eq(subscriptions.userId, user.userId),
         eq(subscriptions.status, "active")
       ),
     });

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCheckoutSession } from "@/lib/polar";
-import { auth } from "@/auth/stack-auth";
+import { getUser } from "@/auth/stack-auth";
 import { db } from "@/db";
 import { apps } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await auth();
+    const user = await getUser().catch(() => null);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       where: eq(apps.id, appId),
     });
 
-    if (!app || app.userId !== user.id) {
+    if (!app || app.userId !== user.userId) {
       return NextResponse.json({ error: "App not found" }, { status: 404 });
     }
 
@@ -36,10 +36,10 @@ export async function POST(request: NextRequest) {
 
     const checkout = await createCheckoutSession({
       productPriceId,
-      customerId: user.id,
+      customerId: user.userId,
       successUrl,
       appId,
-      userId: user.id,
+      userId: user.userId,
     });
 
     return NextResponse.json({
