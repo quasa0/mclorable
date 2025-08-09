@@ -8,7 +8,6 @@ import { CompressedImage } from "@/lib/image-compression";
 import { useChatSafe } from "./use-chat";
 import { GlassEffect, GlassFilter } from "./ui/liquidy-glass";
 import { Markdown } from "./ui/markdown";
-import { HomeIcon, RefreshCwIcon, TerminalIcon } from "lucide-react";
 
 export default function Chat(props: {
   appId: string;
@@ -111,56 +110,6 @@ export default function Chat(props: {
   return (
     <div className="relative h-full w-full">
       <GlassFilter />
-      {/* Top action bar (moved from TopBar) */}
-      {/* <div className="pointer-events-none fixed inset-x-0 top-0 z-30 px-4 py-2">
-        <div className="pointer-events-auto mx-auto w-full max-w-5xl flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <GlassEffect
-              href="/"
-              target="_self"
-              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
-              overlayOpacity={0.18}
-              outlineOpacity={0.25}
-              outlineWidth={0.5}
-              aria-label="Home"
-            >
-              <div className="h-10 w-10 flex items-center justify-center">
-                <HomeIcon className="h-4 w-4" />
-              </div>
-            </GlassEffect>
-          </div>
-          <div className="flex items-center gap-2">
-            <GlassEffect
-              onClick={props.onRefresh}
-              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
-              style={{ opacity: props.onRefresh ? 1 : 0.5, pointerEvents: props.onRefresh ? "auto" : "none" }}
-              overlayOpacity={0.18}
-              outlineOpacity={0.25}
-              outlineWidth={0.5}
-              aria-label="Refresh"
-              role="button"
-              tabIndex={0}
-            >
-              <div className="h-10 w-10 flex items-center justify-center">
-                <RefreshCwIcon className="h-4 w-4" />
-              </div>
-            </GlassEffect>
-            <GlassEffect
-              href={props.consoleUrl}
-              target="_blank"
-              className="h-10 w-10 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95"
-              overlayOpacity={0.18}
-              outlineOpacity={0.25}
-              outlineWidth={0.5}
-              aria-label="Open Terminal"
-            >
-              <div className="h-10 w-10 flex items-center justify-center">
-                <TerminalIcon className="h-4 w-4" />
-              </div>
-            </GlassEffect>
-          </div>
-        </div>
-      </div> */}
       {/* Messages feed */}
       {isFeedOpen && (
         <div className="pointer-events-none fixed inset-x-0 bottom-16 z-10 flex justify-center px-4">
@@ -236,6 +185,7 @@ export default function Chat(props: {
               overlayOpacity={0.18}
               outlineOpacity={0.25}
               outlineWidth={0.5}
+              style={{ boxShadow: "none" }}
               aria-label={isFeedOpen ? 'Hide feed' : 'Show feed'}
               role="button"
               tabIndex={0}
@@ -273,6 +223,7 @@ export default function Chat(props: {
               overlayOpacity={0.18}
               outlineOpacity={0.25}
               outlineWidth={0.5}
+              style={{ boxShadow: "none" }}
               aria-label="Send message"
               role="button"
               tabIndex={0}
