@@ -1,0 +1,12 @@
+.git
+.github
+.vscode
+node_modules
+.env
+.env.local
+*.log
+.DS_Store
+test-paywall.html
+drizzle/
+*.md
+!README.md
