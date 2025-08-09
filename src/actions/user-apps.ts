@@ -12,6 +12,7 @@ export async function getUserApps() {
     .select({
       id: appsTable.id,
       name: appsTable.name,
+      handle: appsTable.handle,
       description: appsTable.description,
       gitRepo: appsTable.gitRepo,
       createdAt: appsTable.createdAt,
