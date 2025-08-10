@@ -14,7 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { CircleDollarSign } from "lucide-react";
+import { GlassEffect } from "@/components/ui/liquidy-glass";
 
 interface ProductCreationModalProps {
   appId: string;
@@ -84,10 +85,17 @@ export function ProductCreationModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Product
-        </Button>
+        <GlassEffect
+          className="h-10 w-40 rounded-xl flex items-center justify-center text-black/50 active:translate-y-px active:scale-95 hover:scale-95 bg-green-200/30"
+          overlayOpacity={0.18}
+          outlineOpacity={0.25}
+          outlineWidth={0.5}
+          aria-label="Add Payments"
+        >
+          <div className="h-10 flex items-center justify-center">
+            <CircleDollarSign className="h-4 w-4 mr-1" />{" "}Make Money
+          </div>
+        </GlassEffect>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
