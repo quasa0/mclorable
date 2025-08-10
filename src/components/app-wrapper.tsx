@@ -52,7 +52,6 @@ export default function AppWrapper({
 
   return (
     <div className="h-screen flex flex-col" style={{ height: "100dvh" }}>
-      <ProductCreationModal appId={appId} />
       <div className="relative flex-1 overflow-hidden">
         {/* Preview fills the background */}
         <div className="absolute inset-0">
