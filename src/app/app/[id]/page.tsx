@@ -2,7 +2,7 @@
 
 import { getApp } from "@/actions/get-app";
 import AppWrapper from "../../../components/app-wrapper";
-import { freestyle } from "@/lib/freestyle";
+import { vercelSandbox } from "@/lib/vercel-sandbox";
 import { db } from "@/db/schema";
 import { appUsers } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -45,9 +45,9 @@ export default async function AppPage({
     resourceId: id,
   });
 
-  const { codeServerUrl, ephemeralUrl } = await freestyle.requestDevServer({
-    repoId: app?.info.gitRepo,
-  });
+  const { codeServerUrl, ephemeralUrl } = await vercelSandbox.requestDevServer(
+    app?.info.gitRepo
+  );
 
   console.log("requested dev server");
 
