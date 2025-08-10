@@ -26,6 +26,12 @@ export async function createApp({
   }
 
   console.time("git");
+  // TEMPORARY: Skip freestyle git operations due to certificate error
+  const mockRepoId = `temp-repo-${Date.now()}`;
+  const repo = { repoId: mockRepoId };
+  const token = { token: "temp-token", id: "temp-token-id" };
+  
+  /* TODO: Re-enable when freestyle certificate is fixed
   const repo = await freestyle.createGitRepository({
     name: "Unnamed App",
     public: true,
@@ -43,13 +49,19 @@ export async function createApp({
   const token = await freestyle.createGitAccessToken({
     identityId: user.freestyleIdentity,
   });
-
+  */
   console.timeEnd("git");
 
   console.time("dev server");
+  // TEMPORARY: Mock dev server response
+  const mcpEphemeralUrl = "http://localhost:3000/__mcp";
+  const fs = null; // Will need to handle this differently
+  
+  /* TODO: Re-enable when freestyle certificate is fixed
   const { mcpEphemeralUrl, fs } = await freestyle.requestDevServer({
     repoId: repo.repoId,
   });
+  */
   console.timeEnd("dev server");
 
   console.time("database: create app");

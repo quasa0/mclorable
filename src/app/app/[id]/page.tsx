@@ -45,9 +45,15 @@ export default async function AppPage({
     resourceId: id,
   });
 
+  // TEMPORARY: Use mock URLs while freestyle is disabled
+  const codeServerUrl = "http://localhost:3000";
+  const ephemeralUrl = "http://localhost:3000";
+  
+  /* TODO: Re-enable when freestyle/vercel sandbox is working
   const { codeServerUrl, ephemeralUrl } = await vercelSandbox.requestDevServer(
     app?.info.gitRepo
   );
+  */
 
   console.log("requested dev server");
 
