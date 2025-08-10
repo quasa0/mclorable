@@ -4,6 +4,7 @@ import { getUser } from "@/auth/stack-auth";
 import { appsTable, appUsers } from "@/db/schema";
 import { db } from "@/db/schema";
 import { freestyle } from "@/lib/freestyle";
+import { vercelSandbox } from "@/lib/vercel-sandbox";
 import { templates } from "@/lib/templates";
 import { memory, builderAgent } from "@/mastra/agents/builder";
 import { sendMessageWithStreaming } from "@/lib/internal/stream-manager";
@@ -52,18 +53,6 @@ export async function createApp({
   */
   console.timeEnd("git");
 
-  console.time("dev server");
-  // TEMPORARY: Mock dev server response
-  const mcpEphemeralUrl = "http://localhost:3000/__mcp";
-  const fs = null; // Will need to handle this differently
-  
-  /* TODO: Re-enable when freestyle certificate is fixed
-  const { mcpEphemeralUrl, fs } = await freestyle.requestDevServer({
-    repoId: repo.repoId,
-  });
-  */
-  console.timeEnd("dev server");
-
   console.time("database: create app");
   const app = await db.transaction(async (tx) => {
     const appInsertion = await tx
@@ -89,6 +78,15 @@ export async function createApp({
     return appInsertion[0];
   });
   console.timeEnd("database: create app");
+  
+  console.time("dev server");
+  // Use vercel sandbox instead of freestyle
+  const { codeServerUrl, ephemeralUrl, fs } = await vercelSandbox.requestDevServer(
+    app.id,
+    templates[templateId].repo // pass template to copy files
+  );
+  const mcpEphemeralUrl = ephemeralUrl + "/__mcp";
+  console.timeEnd("dev server");
 
   console.time("mastra: create thread");
   await memory.createThread({
