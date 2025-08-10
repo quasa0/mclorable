@@ -118,7 +118,7 @@ export default function Chat(props: {
               ref={feedRef}
                 className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pt-3 pb-2 pr-1 pl-1 no-scrollbar"
             >
-              {messages.map((message: any) => {
+              {messages.map((message: any, index: number) => {
                 const text = Array.isArray(message.parts)
                   ? message.parts
                       .filter((p: any) => p.type === "text")
@@ -129,7 +129,7 @@ export default function Chat(props: {
                 const isUser = message.role === "user";
                 return (
                   <div
-                    key={message.id}
+                    key={message.id || `message-${index}`}
                     className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                   >
                     <GlassEffect
