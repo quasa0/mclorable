@@ -35,7 +35,7 @@ export const appUsers = pgTable("app_users", {
     .notNull()
     .references(() => appsTable.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  permissions: appPermissions("permissions"),
+  permissions: appPermissions("permissions").notNull().default("admin"),
   freestyleIdentity: text("freestyle_identity").notNull(),
   freestyleAccessToken: text("freestyle_access_token").notNull(),
   freestyleAccessTokenId: text("freestyle_access_token_id").notNull(),
