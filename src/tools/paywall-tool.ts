@@ -81,9 +81,9 @@ export const integratePaywallTool = createTool({
           },
         ],
         after_completion: {
-          type: "redirect",
-          redirect: {
-            url: `{CHECKOUT_SESSION_URL}`, // this will be replaced by stripe with the actual URL
+          type: "hosted_confirmation",
+          hosted_confirmation: {
+            custom_message: "Thank you for your purchase! You can now close this window and return to the app.",
           },
         },
       });
