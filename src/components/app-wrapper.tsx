@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GlassEffect } from "./ui/liquidy-glass";
 import { RefreshCwIcon, TerminalIcon } from "lucide-react";
 import { ProductCreationModal } from "./product-creation-modal";
+import { ShareButton } from "./share-button";
 
 const queryClient = new QueryClient();
 
@@ -152,6 +153,13 @@ export default function AppWrapper({
             </GlassEffect>
 
             <ProductCreationModal appId={appId} />
+            
+            <ShareButton 
+              domain={domain} 
+              appId={appId} 
+              useGlassTrigger={true}
+              glassClassName="h-10"
+            />
           </div>
         </div>
       </div>
