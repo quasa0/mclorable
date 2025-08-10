@@ -1,25 +1,40 @@
-import { z } from "zod";
 import { createTool } from "@mastra/core/tools";
 import Stripe from "stripe";
+import { z } from "zod";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-12-18.acacia",
+  apiVersion: "2025-07-30.basil",
 });
 
 export const integratePaywallTool = createTool({
   id: "integrate_paywall",
-  name: "Create Payment Link",
-  description: "Create a Stripe product and payment link that the AI can integrate into the app",
+  description:
+    "Create a Stripe product and payment link. REQUIRED: productName (e.g. 'Premium Membership'), price in cents (e.g. 500 for $5.00)",
   inputSchema: z.object({
-    productName: z.string().describe("Name of the product/subscription"),
+    productName: z
+      .string()
+      .describe(
+        "REQUIRED: Name of the product/subscription (e.g., 'Premium Membership', 'Pro Plan')"
+      ),
     description: z.string().optional().describe("Product description"),
-    price: z.number().describe("Price in cents (e.g., 999 for $9.99)"),
+    price: z
+      .number()
+      .describe(
+        "REQUIRED: Price in cents (e.g., 500 for $5.00, 999 for $9.99)"
+      ),
     currency: z.string().default("usd").describe("Currency code"),
-    recurring: z.boolean().default(false).describe("Is this a subscription?"),
-    interval: z.enum(["month", "year"]).optional().describe("Billing interval if recurring"),
+    recurring: z
+      .boolean()
+      .default(true)
+      .describe("Is this a subscription? Default true"),
+    interval: z
+      .enum(["month", "year"])
+      .default("month")
+      .describe("Billing interval if recurring (default: month)"),
   }),
-  execute: async (input) => {
-    const { productName, description, price, currency, recurring, interval } = input;
+  execute: async ({ context }) => {
+    const { productName, description, price, currency, recurring, interval } =
+      context;
 
     // validate required fields
     if (!productName || productName.trim() === "") {
@@ -48,11 +63,13 @@ export const integratePaywallTool = createTool({
         product: product.id,
         unit_amount: price,
         currency: currency,
-        ...(recurring && interval ? {
-          recurring: {
-            interval: interval,
-          },
-        } : {}),
+        ...(recurring && interval
+          ? {
+              recurring: {
+                interval: interval,
+              },
+            }
+          : {}),
       });
 
       // create payment link
@@ -80,9 +97,14 @@ export const integratePaywallTool = createTool({
       };
     } catch (error) {
       console.error("Error creating payment link:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to create payment link";
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to create payment link",
+        error: errorMessage,
+        hint: "Make sure to provide: productName (e.g. 'Premium Membership'), price in cents (e.g. 500 for $5.00)",
       };
     }
   },
