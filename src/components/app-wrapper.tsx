@@ -88,7 +88,7 @@ export default function AppWrapper({
         {/* Bottom-centered chat overlay */}
         <QueryClientProvider client={queryClient}>
           <div className="pointer-events-none fixed inset-x-0 bottom-[max(16px,env(safe-area-inset-bottom))] z-20 flex justify-center px-4">
-            <div className="pointer-events-auto w-full max-w-3xl sm:h-[40vh] h-[50vh]">
+            <div className="pointer-events-auto relative w-full max-w-3xl sm:h-[40vh] h-[50vh]">
               <Chat
                 appId={appId}
                 initialMessages={initialMessages}
