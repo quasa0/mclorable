@@ -119,17 +119,23 @@ export default function Chat(props: {
                 className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pt-3 pb-2 pr-1 pl-1 no-scrollbar"
             >
               {messages.map((message: any, index: number) => {
+                // Extract text from message parts
                 const text = Array.isArray(message.parts)
                   ? message.parts
                       .filter((p: any) => p.type === "text")
                       .map((p: any) => p.text)
-                      .join("")
+                      .join("\n") // Preserve line breaks between parts
                   : "";
-                if (!text) return null;
+                
+                // Skip empty messages
+                if (!text || text.trim() === "") return null;
+                
                 const isUser = message.role === "user";
+                const messageKey = message.id ? `msg-${message.id}` : `msg-${index}-${message.role}`;
+                
                 return (
                   <div
-                    key={message.id || `message-${index}`}
+                    key={messageKey}
                     className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                   >
                     <GlassEffect
