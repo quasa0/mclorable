@@ -49,7 +49,35 @@ uses stack auth (`src/auth/stack-auth.ts`) for user management with freestyle id
 
 ### Tools Available to AI
 - `update_todo_list`: track tasks for user requests
+- `integrate_paywall`: generate AI-powered paywall components with 16 different combinations (4 types × 4 styles)
 - `morph_tool` (optional): fast code editing via morph api
+
+### Payment Integration
+
+Adorable includes complete Stripe payment integration for monetizing user-generated apps:
+
+**Architecture:**
+- Products and subscriptions stored in PostgreSQL (`products`, `subscriptions` tables)
+- Stripe integration via server-side APIs (`src/lib/stripe.ts`)
+- AI-generated paywall components via `integrate_paywall` tool
+- Centralized checkout through mclorable.com backend
+
+**Payment Flow:**
+1. Users create products via "Create Product" button in TopBar UI
+2. AI generates custom paywall components using `integrate_paywall` tool
+3. Paywalls redirect to Stripe checkout hosted on mclorable.com
+4. Webhooks update subscription status automatically
+5. Apps check subscription status via `/api/payments/subscription`
+
+**Environment Variables Required:**
+- `STRIPE_SECRET_KEY`: Stripe secret key for API calls
+- `STRIPE_WEBHOOK_SECRET`: For webhook signature verification
+
+**API Endpoints:**
+- `POST /api/payments/checkout` - Create checkout sessions
+- `GET/POST /api/payments/products` - Product CRUD operations  
+- `GET /api/payments/subscription` - Check subscription status
+- `POST /api/payments/webhook` - Handle Stripe webhook events
 
 ## Important Context
 
