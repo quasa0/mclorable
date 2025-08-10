@@ -118,20 +118,27 @@ export default function Chat(props: {
               ref={feedRef}
                 className="relative space-y-2 max-h-[40vh] overflow-y-auto overscroll-contain overflow-x-visible pt-3 pb-2 pr-1 pl-1 no-scrollbar"
             >
-              {messages.map((message: any, index: number) => {
-                const text = Array.isArray(message.parts)
-                  ? message.parts
-                      .filter((p: any) => p.type === "text")
-                      .map((p: any) => p.text)
-                      .join("")
-                  : "";
-                if (!text) return null;
-                const isUser = message.role === "user";
-                return (
-                  <div
-                    key={message.id || `message-${index}`}
-                    className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-                  >
+              {/* Deduplicate messages by id before rendering */}
+              {messages
+                .filter((msg: any, idx: number, arr: any[]) => {
+                  // Keep messages without id or first occurrence of messages with same id
+                  if (!msg.id) return true;
+                  return arr.findIndex((m: any) => m.id === msg.id) === idx;
+                })
+                .map((message: any, index: number) => {
+                  const text = Array.isArray(message.parts)
+                    ? message.parts
+                        .filter((p: any) => p.type === "text")
+                        .map((p: any) => p.text)
+                        .join("")
+                    : "";
+                  if (!text) return null;
+                  const isUser = message.role === "user";
+                  return (
+                    <div
+                      key={message.id || `message-${index}`}
+                      className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                    >
                     <GlassEffect
                       className={`pointer-events-auto ${isUser ? "min-w-[30%]" : "min-w-[60%]"} max-w-[85%] rounded-xl ${isUser ? "mr-2" : "ml-2"}`}
                       overlayOpacity={0.18}
@@ -147,7 +154,7 @@ export default function Chat(props: {
                     </GlassEffect>
                   </div>
                 );
-              })}
+                })}
             </div>
           </div>
         </div>
