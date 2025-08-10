@@ -2,7 +2,7 @@
 
 import { getApp } from "@/actions/get-app";
 import AppWrapper from "../../../components/app-wrapper";
-import { vercelSandbox } from "@/lib/vercel-sandbox";
+import { e2bSandbox } from "@/lib/e2b-sandbox";
 import { db } from "@/db/schema";
 import { appUsers } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -45,8 +45,8 @@ export default async function AppPage({
     resourceId: id,
   });
 
-  // Use vercel sandbox with app id instead of git repo
-  const { codeServerUrl, ephemeralUrl } = await vercelSandbox.requestDevServer(
+  // Use e2b sandbox with app id instead of git repo
+  const { codeServerUrl, ephemeralUrl } = await e2bSandbox.requestDevServer(
     app.info.id
   );
 

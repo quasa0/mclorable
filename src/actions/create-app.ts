@@ -4,7 +4,7 @@ import { getUser } from "@/auth/stack-auth";
 import { appsTable, appUsers } from "@/db/schema";
 import { db } from "@/db/schema";
 import { freestyle } from "@/lib/freestyle";
-import { vercelSandbox } from "@/lib/vercel-sandbox";
+import { e2bSandbox } from "@/lib/e2b-sandbox";
 import { templates } from "@/lib/templates";
 import { memory, builderAgent } from "@/mastra/agents/builder";
 import { sendMessageWithStreaming } from "@/lib/internal/stream-manager";
@@ -80,8 +80,8 @@ export async function createApp({
   console.timeEnd("database: create app");
   
   console.time("dev server");
-  // Use vercel sandbox instead of freestyle
-  const { codeServerUrl, ephemeralUrl, fs } = await vercelSandbox.requestDevServer(
+  // Use e2b sandbox instead of freestyle
+  const { codeServerUrl, ephemeralUrl, fs } = await e2bSandbox.requestDevServer(
     app.id,
     templates[templateId].repo // pass template to copy files
   );
