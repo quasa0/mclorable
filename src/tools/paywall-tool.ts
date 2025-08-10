@@ -21,10 +21,25 @@ export const integratePaywallTool = createTool({
   execute: async (input) => {
     const { productName, description, price, currency, recurring, interval } = input;
 
+    // validate required fields
+    if (!productName || productName.trim() === "") {
+      return {
+        success: false,
+        error: "Product name is required",
+      };
+    }
+
+    if (!price || price <= 0) {
+      return {
+        success: false,
+        error: "Price must be greater than 0",
+      };
+    }
+
     try {
       // create stripe product
       const product = await stripe.products.create({
-        name: productName,
+        name: productName.trim(),
         description: description || undefined,
       });
 
