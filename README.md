@@ -1,6 +1,6 @@
 # McLovin
 
-McLovin is an AI-powered CTO that builds, edits, and deploys full-stack web and mobile apps from a prompt. You describe what you want, watch the app come together in a live workspace, and publish it when it is ready.
+McLovin is an AI-powered CTO that builds, edits, monetizes, and deploys full-stack web and mobile apps from a prompt. You describe what you want, watch the app come together in a live workspace, and publish it when it is ready.
 
 <table>
   <tr>
@@ -18,7 +18,9 @@ McLovin is an AI-powered CTO that builds, edits, and deploys full-stack web and 
 
 ## Why
 
-Most app builders charge for token usage before a product has created any value. McLovin flips that around: it is designed as a revenue-aligned AI CTO that helps users build and ship apps, then charges only when those apps make money.
+Most app builders charge for token usage before a product has created any value. McLovin flips that around: it is designed as a revenue-aligned AI CTO that helps users build, monetize, and ship apps, then charges only when those apps make money.
+
+McLovin also adds payments out of the box, so a generated app can start making money immediately. And because you can call McLovin to start vibe coding, you do not need to be at a desktop to get an idea moving.
 
 ## Hackathon
 
@@ -34,4 +36,6 @@ We won **Best Landing Page** and **Best in Web/Mobile**, the track for agents th
 - **Freestyle dev servers** provide an interactive preview while the agent edits the app.
 - **Mastra and Claude** power the builder agent, chat memory, and long-running app edits.
 - **Image-aware chat** lets users attach screenshots or references while asking for changes.
+- **Built-in payments** let generated apps start accepting money immediately.
+- **Call-based coding** lets users start building from their phone without opening a desktop editor.
 - **One-click publishing** deploys finished apps from git to a preview domain.
