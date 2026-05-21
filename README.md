@@ -1,6 +1,6 @@
 # McLovin
 
-McLovin is an AI-powered CTO that builds, edits, monetizes, and deploys full-stack web and mobile apps from a prompt. You describe what you want, watch the app come together in a live workspace, and publish it when it is ready.
+McLovin is an AI-powered CTO that builds, edits, monetizes, and deploys full-stack web apps from a prompt. You describe what you want, watch the app come together in a live workspace, and publish it when it is ready.
 
 <table>
   <tr>
